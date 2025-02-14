@@ -15,7 +15,8 @@ class BookService {
       if (query.docs.isEmpty) return null;
       
       final doc = query.docs.first;
-      return BookModel.fromJson(doc.data()..['id'] = doc.id);
+      return BookModel.fromJson(doc.data() as Map<String, dynamic>, doc.id);
+
     } catch (e) {
       print('Error getting book: $e');
       return null;
@@ -38,7 +39,7 @@ class BookService {
           .get();
 
       return booksQuery.docs
-          .map((doc) => BookModel.fromJson(doc.data()..['id'] = doc.id))
+          .map((doc) => BookModel.fromJson(doc.data() as Map<String, dynamic>, doc.id))
           .toList();
     } catch (e) {
       print('Error getting user books: $e');
@@ -75,7 +76,8 @@ class BookService {
         .where('name', isLessThanOrEqualTo: query + '\uf8ff') // Firestore string range query
         .snapshots()
         .map((snapshot) =>
-            snapshot.docs.map((doc) => BookModel.fromJson(doc.data()..['id'] = doc.id)).toList());
+            snapshot.docs.map((doc) => BookModel.fromJson(doc.data() as Map<String, dynamic>, doc.id)
+).toList());
   }
 
   
