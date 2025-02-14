@@ -4,48 +4,67 @@ import '../../models/book_model.dart';
 class BookService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-
   Future<BookModel?> getBook(int bookId) async {
     try {
-      QuerySnapshot book = await _firestore
+      final query = await _firestore
           .collection('books')
           .where('bookId', isEqualTo: bookId)
+          .limit(1)
           .get();
-      if (book.docs.isNotEmpty) {
-        return BookModel.fromJson(book.docs.first.data() as Map<String, dynamic>);
-      }
 
-      return null; // Book not found
+      if (query.docs.isEmpty) return null;
+      
+      final doc = query.docs.first;
+      return BookModel.fromJson(doc.data()..['id'] = doc.id);
     } catch (e) {
+      print('Error getting book: $e');
       return null;
     }
   }
 
+  Future<List<BookModel>> getBooksForUser(String userId) async {
+    try {
+      // Example: Get user's wishlist and fetch those books
+      final userDoc = await _firestore.collection('users').doc(userId).get();
+      if (!userDoc.exists) return [];
 
-  Future<void> addToWishlist(String userId, int bookId) async {
-    DocumentReference userRef = _firestore.collection('users').doc(userId);
-    DocumentSnapshot userDoc = await userRef.get();
+      final wishlist = List<int>.from(userDoc.get('wishlist') ?? []);
+      
+      if (wishlist.isEmpty) return [];
+      
+      final booksQuery = await _firestore
+          .collection('books')
+          .where('bookId', whereIn: wishlist)
+          .get();
 
-    if (userDoc.exists) {
-      List wishlist = userDoc.get('wishlist') ?? [];
-
-      if (!wishlist.contains(bookId)) {
-        wishlist.add(bookId);
-        await userRef.update({'wishlist': wishlist});
-      }
+      return booksQuery.docs
+          .map((doc) => BookModel.fromJson(doc.data()..['id'] = doc.id))
+          .toList();
+    } catch (e) {
+      print('Error getting user books: $e');
+      return [];
     }
   }
+
+  Future<void> addToWishlist(String userId, int bookId) async {
+    try {
+      await _firestore.collection('users').doc(userId).update({
+        'wishlist': FieldValue.arrayUnion([bookId])
+      });
+    } catch (e) {
+      print('Error adding to wishlist: $e');
+      rethrow;
+    }
+  }
+
   Future<void> removeFromWishlist(String userId, int bookId) async {
-    DocumentReference userRef = _firestore.collection('users').doc(userId);
-    DocumentSnapshot userDoc = await userRef.get();
-
-    if (userDoc.exists) {
-      List wishlist = userDoc.get('wishlist') ?? [];
-
-      if (wishlist.contains(bookId)) {
-        wishlist.remove(bookId);
-        await userRef.update({'wishlist': wishlist});
-      }
+    try {
+      await _firestore.collection('users').doc(userId).update({
+        'wishlist': FieldValue.arrayRemove([bookId])
+      });
+    } catch (e) {
+      print('Error removing from wishlist: $e');
+      rethrow;
     }
   }
 }
