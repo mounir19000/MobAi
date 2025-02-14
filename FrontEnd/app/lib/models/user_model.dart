@@ -4,10 +4,14 @@ class UserModel {
   String email;
   String phone;
   List<String> searchPrompts;
-  List<String> wishlist;
+  List<int> wishlist;
   List<Map<String, dynamic>> cartItems;
   List<String> orders;
+  List<int> boughtBooks;
+  double balance;
 
+  //add list of bought books
+  //save prompts
   UserModel({
     required this.uid,
     required this.username,
@@ -17,6 +21,8 @@ class UserModel {
     this.wishlist = const [],
     this.cartItems = const [],
     this.orders = const [],
+    this.boughtBooks = const [],
+    required this.balance
   });
 
   // Convert to Firestore Map
@@ -30,6 +36,8 @@ class UserModel {
       'wishlist': wishlist,
       'cartItems': cartItems,
       'orders': orders,
+      'boughtBooks':boughtBooks,
+      'balance':balance
     };
   }
 
@@ -41,9 +49,11 @@ class UserModel {
       email: json['email'],
       phone: json['phone'],
       searchPrompts: List<String>.from(json['searchPrompts'] ?? []),
-      wishlist: List<String>.from(json['wishlist'] ?? []),
+      wishlist: List<int>.from(json['wishlist'] ?? []),
       cartItems: List<Map<String, dynamic>>.from(json['cartItems'] ?? []),
       orders: List<String>.from(json['orders'] ?? []),
+      boughtBooks: List<int>.from(json['boughtBooks'] ?? []),
+      balance: json['balance']
     );
   }
 }

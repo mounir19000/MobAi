@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class FirestoreService {
+class CartService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  //  Add Item to Cart (or update quantity if already exists)
-  Future<void> addToCart(String userId, String bookId, int quantity) async {
+  //  Add Book to Cart ( update quantity if exists)
+  Future<void> addToCart(String userId, int bookId, int quantity) async {
     DocumentReference userRef = _firestore.collection('users').doc(userId);
     DocumentSnapshot userDoc = await userRef.get();
 
@@ -14,7 +14,7 @@ class FirestoreService {
       // Check if book is already in the cart
       int index = cartItems.indexWhere((item) => item['bookId'] == bookId);
       if (index != -1) {
-        cartItems[index]['quantity'] += quantity;  // ✅ Update quantity
+        cartItems[index]['quantity'] += quantity;
       } else {
         cartItems.add({'bookId': bookId, 'quantity': quantity});
       }
@@ -23,20 +23,18 @@ class FirestoreService {
     }
   }
 
-  // 🔹 Remove Item from Cart
-  Future<void> removeFromCart(String userId, String bookId) async {
+  //  Remove Book from Cart
+  Future<void> removeFromCart(String userId, int bookId) async {
     DocumentReference userRef = _firestore.collection('users').doc(userId);
     DocumentSnapshot userDoc = await userRef.get();
 
     if (userDoc.exists) {
       List cartItems = userDoc.get('cartItems') ?? [];
-      cartItems.removeWhere((item) => item['bookId'] == bookId);  // ✅ Remove book from cart
+      cartItems.removeWhere((item) => item['bookId'] == bookId);
 
       await userRef.update({'cartItems': cartItems});
     }
   }
-
-  // 🔹 Clear Cart (After Purchase)
   Future<void> clearCart(String userId) async {
     await _firestore.collection('users').doc(userId).update({'cartItems': []});
   }
