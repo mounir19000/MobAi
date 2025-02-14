@@ -22,6 +22,16 @@ class _MyPageViewState extends State<MyPageView> with TickerProviderStateMixin {
     super.initState();
     _pageViewController = PageController();
     _tabController = TabController(length: 3, vsync: this);
+
+    _pageViewController.addListener(() {
+      int newIndex = _pageViewController.page!.round();
+      if (newIndex != _currentPageIndex) {
+        setState(() {
+          _currentPageIndex = newIndex;
+          _tabController.index = newIndex;
+        });
+      }
+    });
   }
 
   @override
@@ -39,20 +49,18 @@ class _MyPageViewState extends State<MyPageView> with TickerProviderStateMixin {
           alignment: Alignment.bottomCenter,
           children: <Widget>[
             Align(
-              alignment: Alignment.topCenter, 
+              alignment: Alignment.topCenter,
               child: ClipPath(
                 clipper: OnboardingClipper(),
                 child: Container(
                   height: MediaQuery.of(context).size.height * 0.25,
                   width: double.infinity,
                   color: Colors.redAccent,
-                  
                 ),
               ),
             ),
             PageView(
               controller: _pageViewController,
-              physics: const NeverScrollableScrollPhysics(), // Disable swiping
               onPageChanged: _handlePageViewChanged,
               children: <Widget>[
                 IntroPage(
@@ -73,53 +81,75 @@ class _MyPageViewState extends State<MyPageView> with TickerProviderStateMixin {
               ],
             ),
             Positioned(
-              bottom: 80.0,
-              child: TabPageSelector(
-                controller: _tabController,
-                color: Colors.grey,
-                selectedColor: Theme.of(context).primaryColor,
-              ),
+              bottom: 140.0,
+              child: _buildPageIndicator(),
             ),
-            
           ],
         ),
-        floatingActionButton: Padding(
-          padding: const EdgeInsets.all(8.0),
+        floatingActionButton: Container(
+          width: double.infinity, // Ensures the Row is centered
+          // color: AppTheme.primaryColor,
+          padding: const EdgeInsets.fromLTRB(
+              40, 10, 0, 0), // Adds spacing
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center, // Centers the buttons
             children: [
-              Visibility(
-                visible: _currentPageIndex != 0,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 30.0), // Adjust position
-                  child: FloatingActionButton(
-                    heroTag: "backButton",
-                    backgroundColor: Colors.white,
-                    onPressed: () {
-                      if (_currentPageIndex > 0) {
-                        _updateCurrentPageIndex(_currentPageIndex - 1);
-                      }
-                    },
-                    shape: const CircleBorder(),
-                    child: const Icon(Icons.arrow_back,
-                        color: AppTheme.primaryColor, size: 40),
+              // Skip button
+              SizedBox(
+                width: 120,
+                height: 50,
+                child: OutlinedButton(
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(context, AppRoutes.login);
+                  },
+                  style: OutlinedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    side: BorderSide(
+                        color: AppTheme.primaryColor, width: 2), // Border color
+                  ),
+                  child: const Text(
+                    "Skip",
+                    style: TextStyle(
+                      color: AppTheme.primaryColor,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
-              const Spacer(),
-              FloatingActionButton(
-                heroTag: "nextButton",
-                backgroundColor: Colors.white,
-                onPressed: () {
-                  if (_currentPageIndex < 2) {
-                    _updateCurrentPageIndex(_currentPageIndex + 1);
-                  } else {
-                    Navigator.pushReplacementNamed(context, AppRoutes.login);
-                  }
-                },
-                shape: const CircleBorder(),
-                child: const Icon(Icons.arrow_forward,
-                    color: AppTheme.primaryColor, size: 40),
+
+              const SizedBox(width: 16), // Reduced spacing between buttons
+
+              // Next button
+              SizedBox(
+                width: 120,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (_currentPageIndex < 2) {
+                      _updateCurrentPageIndex(_currentPageIndex + 1);
+                    } else {
+                      Navigator.pushReplacementNamed(context, AppRoutes.login);
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(30), // Rounded corners
+                    ),
+                  ),
+                  child: const Text(
+                    "Next",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -128,10 +158,30 @@ class _MyPageViewState extends State<MyPageView> with TickerProviderStateMixin {
     );
   }
 
-  void _handlePageViewChanged(int currentPageIndex) {
+  /// Custom page indicator with rounded rectangle for selected
+  Widget _buildPageIndicator() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(3, (index) {
+        bool isSelected = index == _currentPageIndex;
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          margin: const EdgeInsets.symmetric(horizontal: 6),
+          height: 10,
+          width: isSelected ? 30 : 10,
+          decoration: BoxDecoration(
+            color: isSelected ? AppTheme.primaryColor : Colors.grey,
+            borderRadius: BorderRadius.circular(10),
+          ),
+        );
+      }),
+    );
+  }
+
+  void _handlePageViewChanged(int index) {
     setState(() {
-      _currentPageIndex = currentPageIndex;
-      _tabController.index = currentPageIndex;
+      _currentPageIndex = index;
+      _tabController.index = index;
     });
   }
 
@@ -141,8 +191,5 @@ class _MyPageViewState extends State<MyPageView> with TickerProviderStateMixin {
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeInOut,
     );
-    setState(() {
-      _currentPageIndex = index;
-    });
   }
 }

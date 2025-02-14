@@ -31,12 +31,12 @@ class IntroPage extends StatelessWidget {
         Text(
           title,
           textAlign: TextAlign.center,
-          style: GoogleFonts.sourceSerif4(
+          style:TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 30),
         ),
-        SizedBox(height: 70),
+        SizedBox(height: 120),
         Image.asset(
           imagurl,
           height: 200,
@@ -101,7 +101,7 @@ class IntroPage extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: 20),
+        //SizedBox(height: 20),
       ],
     );
   }
