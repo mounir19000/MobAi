@@ -101,14 +101,25 @@ class _LoginPageState extends State<LoginPage> {
                     height: MediaQuery.of(context).size.height * 0.25,
                     width: double.infinity,
                     color: Colors.redAccent,
-                    child: Center(
-                        child: Text(
-                      "Welcome",
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold),
-                    )),
+                    padding: EdgeInsets.only(bottom: 50),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "Welcome to",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 26,
+                          
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Image.asset(
+                          "lib/assets/images/logo-white.png", // Adjust the path if needed
+                          width: 500, // Adjust size if necessary
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 SingleChildScrollView(
@@ -142,12 +153,14 @@ class _LoginPageState extends State<LoginPage> {
                                 Navigator.pushReplacementNamed(
                                     context, AppRoutes.forgetpass);
                               },
-                              child: Text(
-                                "Forget your password ?",
-                                style: const TextStyle(
-                                    decoration: TextDecoration.underline,
-                                    fontSize: 12,
-                                    color: Color.fromARGB(255, 0, 0, 0)),
+                              child: Center(
+                                child: Text(
+                                  "Forget your password ?",
+                                  style: const TextStyle(
+                                      decoration: TextDecoration.underline,
+                                      fontSize: 12,
+                                      color: Color.fromARGB(255, 0, 0, 0)),
+                                ),
                               ),
                             ),
                           ],
@@ -160,28 +173,36 @@ class _LoginPageState extends State<LoginPage> {
                   alignment: Alignment.bottomCenter,
                   child: Padding(
                     padding: EdgeInsets.only(
-                        right: 30,
-                        left: 30,
-                        bottom: MediaQuery.of(context).viewInsets.bottom + 50),
+                      right: 30,
+                      left: 30,
+                      bottom: MediaQuery.of(context).viewInsets.bottom + 50,
+                    ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
+                      
                       children: [
                         if (_isLoading)
                           CircularProgressIndicator()
                         else
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: Size(double.infinity, 55),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                          SizedBox(
+                            width: 230, // Fixed width for both buttons
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: Size(
+                                    700, 55), // Ensuring same width and height
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
                               ),
-                            ),
-                            onPressed: () {
-                              validateInputs();
-                            },
-                            child: Text(
-                              "login",
-                              style: TextStyle(color: Colors.white),
+                              onPressed: () {
+                                validateInputs();
+                              },
+                              child: Text(
+                                "Login",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18), // Uniform font size
+                              ),
                             ),
                           ),
                         if (_errorMessage != null) ...[
@@ -192,30 +213,44 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ],
                         SizedBox(height: 15),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            backgroundColor: Colors.transparent,
-                            minimumSize: Size(double.infinity, 55),
-                            side:
-                                BorderSide(color: Color(0xffE9EBED), width: 1),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                        SizedBox(
+                          width: 230, // Fixed width for both buttons
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              backgroundColor: Colors.transparent,
+                              minimumSize: Size(
+                                  700, 55), // Ensuring same width and height
+                              side: BorderSide(
+                                color: AppTheme.primaryColor,
+                                width: 2,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.pushReplacementNamed(
+                                  context, AppRoutes.register);
+                            },
+                            child: Text(
+                              "Sign up",
+                              style: TextStyle(
+                                  color: AppTheme.primaryColor,
+                                  fontSize: 18), // Uniform font size
                             ),
                           ),
-                          onPressed: () {
-                            Navigator.pushReplacementNamed(
-                                context, AppRoutes.register);
-                          },
-                          child: Text(
-                            "Sign up",
-                            style: TextStyle(color: Color(0xFF818181)),
-                          ),
+                        
                         ),
+                        SizedBox(height: 150,)
                       ],
                     ),
                   ),
                 ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Image.asset("lib/assets/images/logo-pink.png"),
+                )
               ],
             ),
           ),

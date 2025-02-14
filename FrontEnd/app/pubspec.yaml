@@ -70,6 +70,25 @@ flutter:
     - lib/assets/images/pageview2.png
     - lib/assets/images/pageview3.png
     - lib/assets/images/Logo.png
+    - lib/assets/images/logo-pink.png
+    - lib/assets/images/logo-white.png
+   
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: lib/assets/fonts/Poppins-Regular.ttf
+        - asset: lib/assets/fonts/Poppins-Bold.ttf
+          weight: 800
+        - asset: lib/assets/fonts/Poppins-Light.ttf
+          weight: 300
+        - asset: lib/assets/fonts/Poppins-Medium.ttf
+          weight: 600
+        - asset: lib/assets/fonts/Poppins-Regular.ttf
+          weight: 500
+        - asset: lib/assets/fonts/Poppins-SemiBold.ttf
+          weight: 700
+
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
