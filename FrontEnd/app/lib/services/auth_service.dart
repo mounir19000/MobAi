@@ -21,6 +21,7 @@ class AuthService {
           username: username,
           email: email,
           phone: phone,
+          balance: 200.0
         );
 
         await _firestore.collection('users').doc(user.uid).set(newUser.toJson());

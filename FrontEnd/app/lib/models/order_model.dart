@@ -4,6 +4,10 @@ class OrderModel {
   List<Map<String, dynamic>> items;
   double total;
   String status;
+  String name;
+  String phonenumber;
+  String address;
+
 
   OrderModel({
     required this.orderId,
@@ -11,6 +15,9 @@ class OrderModel {
     required this.items,
     required this.total,
     this.status = "Pending",
+    required this.name,
+    required this.phonenumber,
+    required this.address
   });
 
   Map<String, dynamic> toJson() {
@@ -20,6 +27,9 @@ class OrderModel {
       'items': items,
       'total': total,
       'status': status,
+      'name':name,
+      'phonenumber':phonenumber,
+      'address':address
     };
   }
 
@@ -30,6 +40,9 @@ class OrderModel {
       items: List<Map<String, dynamic>>.from(json['items'] ?? []),
       total: json['total'].toDouble(),
       status: json['status'] ?? "Pending",
+      name: json['name'],
+      phonenumber: json['phonenumber'],
+      address: json['address']
     );
   }
 }
