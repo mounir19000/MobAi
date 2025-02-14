@@ -2,6 +2,7 @@ import 'package:app/routes/routes.dart';
 import 'package:flutter/material.dart';
 
 import '../core/constants/app_theme.dart';
+import '../core/constants/top_curve.dart';
 import '../core/services/auth_sevice.dart';
 import '../core/services/responsive.dart';
 
@@ -27,12 +28,11 @@ class _LoginPageState extends State<LoginPage> {
           _emailController.text.isEmpty ? "Email is required" : null;
       passwordError =
           _passwordController.text.isEmpty ? "Password is required" : null;
-      
     });
 
     if (emailAddressError == null && passwordError == null) {
       // Navigator.pushReplacementNamed(context, AppRoutes.strorelist);
-     // _login();
+      // _login();
     }
   }
 
@@ -80,48 +80,51 @@ class _LoginPageState extends State<LoginPage> {
             ),
             child: Stack(
               children: [
-                //Align(alignment:Alignment.topCenter, child: ),
+                ClipPath(
+                          clipper: OnboardingClipper(),
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.25,
+                            width: double.infinity,
+                            color: Colors.redAccent,
+                            child: Center(child: Text("Welcome",
+                            style: const TextStyle(
+                            color: Colors.white,
+                               fontSize: 28, fontWeight: FontWeight.bold),)),
+                          ),
+                        ),
                 SingleChildScrollView(
                   child: Container(
-                    margin: const EdgeInsets.all(20),
-                    padding: const EdgeInsets.all(10),
+                    
+                    margin: const EdgeInsets.fromLTRB(20,0,20,20),
+                    padding: const EdgeInsets.fromLTRB(10,0,10,10),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const SizedBox(height: 20),
-                        Text(
-                          "Hello, welcome!",
-                          style: const TextStyle(
-                              fontSize: 28, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          "Sign in to your account",
-                          style: const TextStyle(
-                              fontSize: 16, color: Color(0xFFA1A1A1)),
-                        ),
-                        const SizedBox(height: 60),
+                        
+                        SizedBox(height: MediaQuery.of(context).size.height * 0.25),
                         TextField(
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
                           decoration: Inputdeco.getDeco(
-                              "Email",
-                              "Enter your email",
-                              emailAddressError),
+                              "Email", "Enter your email", emailAddressError),
                         ),
                         SizedBox(height: 26),
                         TextField(
                           controller: _passwordController,
                           obscureText: true,
                           decoration: Inputdeco.getDeco(
-                              "Password",
-                              "Enter your password",passwordError),
+                              "Password", "Enter your password", passwordError),
                         ),
                         SizedBox(height: 24),
-                        Text(
-                          "Forget your password ?",
-                          style: const TextStyle(
-                              fontSize: 12, color: Color(0xFFA1A1A1)),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Forget your password ?",
+                              style: const TextStyle(
+                                  fontSize: 12, color: Color(0xFFA1A1A1)),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -192,4 +195,5 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+  
 }

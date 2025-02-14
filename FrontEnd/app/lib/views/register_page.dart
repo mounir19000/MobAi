@@ -3,6 +3,7 @@ import 'package:app/routes/routes.dart';
 import 'package:flutter/material.dart';
 
 import '../core/constants/app_theme.dart';
+import '../core/constants/top_curve.dart';
 import '../core/services/responsive.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -54,101 +55,110 @@ class _RegisterPageState extends State<RegisterPage> {
             constraints: BoxConstraints(
               maxWidth: Responsive.getAuthMaxWidth(context),
             ),
-            child: SingleChildScrollView(
-              // Make the entire body scrollable
-              child: Container(
-                margin: const EdgeInsets.all(20),
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 20),
-                    Text(
-                      "Hello, welcome!",
-                      style: const TextStyle(
-                          fontSize: 28, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      "Create your account",
-                      style: const TextStyle(
-                          fontSize: 16, color: Color(0xFFA1A1A1)),
-                    ),
-                    const SizedBox(height: 60),
-                    TextField(
-                      controller: _fullnameController,
-                      keyboardType: TextInputType.text,
-                      decoration: Inputdeco.getDeco(
-                          "Full name",
-                          "Enter your full name",fullnameError),
-                    ),
-                    SizedBox(height: 15),
-                    TextField(
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: Inputdeco.getDeco(
-                         "Email", "Enter your email",emailAddressError),
-                    ),
-                    SizedBox(height: 15),
-                    TextField(
-                      controller: _numberController,
-                      keyboardType: TextInputType.number,
-                      decoration: Inputdeco.getDeco(
-                          "Phone number",
-                          "Enter your phone number",numberdError),
-                    ),
-                    SizedBox(height: 15),
-                    TextField(
-                      controller: _passwordController,
-                      obscureText: true,
-                      decoration: Inputdeco.getDeco(
-                          "Password",
-                          "Enter your password",passwordError),
-                    ),
-                    SizedBox(height: 50),
-                    Column(
-                      children: [
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: Size(double.infinity, 55),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.topCenter, 
+                  child: ClipPath(
+                            clipper: OnboardingClipper(),
+                            child: Container(
+                              height: MediaQuery.of(context).size.height * 0.25,
+                              width: double.infinity,
+                              color: Colors.redAccent,
+                              child: Center(child: Text("Create Account",
+                              style: const TextStyle(
+                              color: Colors.white,
+                                 fontSize: 28, fontWeight: FontWeight.bold),)),
                             ),
                           ),
-                          onPressed: () {
-                            Navigator.pushReplacementNamed(
-                                context, AppRoutes.homepage);
-                          },
-                          child: Text(
-                            "Sign up",
-                            style: TextStyle(color: Colors.white),
-                          ),
+                ),
+                SingleChildScrollView(
+                  // Make the entire body scrollable
+                  child: Container(
+                    margin: const EdgeInsets.fromLTRB(20,0,20,20),
+                    padding: const EdgeInsets.fromLTRB(10,0,10,10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                       
+                        
+                        SizedBox(height: MediaQuery.of(context).size.height * 0.25),
+                        TextField(
+                          controller: _fullnameController,
+                          keyboardType: TextInputType.text,
+                          decoration: Inputdeco.getDeco(
+                              "Full name",
+                              "Enter your full name",fullnameError),
                         ),
                         SizedBox(height: 15),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            backgroundColor: Colors.transparent,
-                            minimumSize: Size(double.infinity, 55),
-                            side:
-                                BorderSide(color: Color(0xffE9EBED), width: 1),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                        TextField(
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: Inputdeco.getDeco(
+                             "Email", "Enter your email",emailAddressError),
+                        ),
+                        SizedBox(height: 15),
+                        TextField(
+                          controller: _numberController,
+                          keyboardType: TextInputType.number,
+                          decoration: Inputdeco.getDeco(
+                              "Phone number",
+                              "Enter your phone number",numberdError),
+                        ),
+                        SizedBox(height: 15),
+                        TextField(
+                          controller: _passwordController,
+                          obscureText: true,
+                          decoration: Inputdeco.getDeco(
+                              "Password",
+                              "Enter your password",passwordError),
+                        ),
+                        SizedBox(height: 50),
+                        Column(
+                          children: [
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: Size(double.infinity, 55),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.pushReplacementNamed(
+                                    context, AppRoutes.homepage);
+                              },
+                              child: Text(
+                                "Sign up",
+                                style: TextStyle(color: Colors.white),
+                              ),
                             ),
-                          ),
-                          onPressed: () {
-                            Navigator.pushReplacementNamed(context, AppRoutes.login);
-                          },
-                          child: Text(
-                            "Already have an account?",
-                            style: TextStyle(color: Color(0xFF818181)),
-                          ),
+                            SizedBox(height: 15),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                elevation: 0,
+                                backgroundColor: Colors.transparent,
+                                minimumSize: Size(double.infinity, 55),
+                                side:
+                                    BorderSide(color: Color(0xffE9EBED), width: 1),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.pushReplacementNamed(context, AppRoutes.login);
+                              },
+                              child: Text(
+                                "Already have an account?",
+                                style: TextStyle(color: Color(0xFF818181)),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
         ),
