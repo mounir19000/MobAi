@@ -1,6 +1,7 @@
 // routes.dart
 
 import 'package:app/views/home_page.dart';
+import 'package:app/views/my_pagview.dart';
 import 'package:flutter/material.dart';
 
 import '../views/forget_pass_page';
@@ -14,7 +15,7 @@ class AppRoutes {
   static const String login = '/login';
   static const String register = '/register';
   static const String forgetpass= '/forgetpass';
-  // static const String forgetPass = '/forgetpass';
+  static const String pageview = '/pageview';
   // static const String select_user_role = '/select_user_role';
   // static const String map = '/map';
   // static const String storeDetail = '/storeDetail';
@@ -34,6 +35,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => RegisterPage());
       case AppRoutes.forgetpass:
         return MaterialPageRoute(builder: (_) => ForgetPassPage());
+      case AppRoutes.pageview:
+        return MaterialPageRoute(builder: (_) => MyPageView());
       // case AppRoutes.storeDetail:
       //   final storeId = settings.arguments as String;
       //   return MaterialPageRoute(
