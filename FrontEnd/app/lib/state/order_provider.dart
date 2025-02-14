@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import '../models/order_model.dart';
 import '../core/services/order_service.dart'; // Service to fetch orders
@@ -21,8 +22,18 @@ class OrderProvider with ChangeNotifier {
     }
   }
 
-  Future<void> loadOrdersForUser(String userId) async {
-    _orders = (await _orderService.getUserOrders(userId)) as List<OrderModel>;
-    notifyListeners();
+Future<void> loadOrdersForUser(String userId) async {
+  try {
+    final ordersStream = _orderService.getUserOrders(userId); // Get the stream
+    final ordersData = await ordersStream.first; // Get first emitted value
+
+    _orders = ordersData.map((orderData) => OrderModel.fromMap(orderData)).toList();
+  } catch (e) {
+    print("Error loading orders: $e");
+    _orders = [];
   }
+  notifyListeners();
+}
+
+
 }

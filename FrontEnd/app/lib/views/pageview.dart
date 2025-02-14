@@ -36,7 +36,7 @@ class IntroPage extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     fontSize: 30),
         ),
-        SizedBox(height: 120),
+        SizedBox(height: 70),
         Image.asset(
           imagurl,
           height: 200,

@@ -23,7 +23,7 @@ class BookModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'Id': id,
+      'id': id,
       'bookId':bookId,
       'imageurl':imageurl,
       'name': name,
@@ -35,17 +35,18 @@ class BookModel {
     };
   }
 
-  factory BookModel.fromJson(Map<String, dynamic> json) {
-    return BookModel(
-      id: json['Id'],
-      bookId:json['bookId'],
-      imageurl: json['imageurl'],
-      name: json['name'],
-      description: json['description'],
-      author: json['author'],
-      genre: json['genre'],
-      price: json['price'].toDouble(),
-      stock: json['stock'],
-    );
-  }
+  factory BookModel.fromJson(Map<String, dynamic> json, String docId) {
+  return BookModel(
+    id: docId, // ✅ Assign Firestore document ID
+    bookId: json['bookId'] ?? 0,
+    imageurl: json['imageurl'] ?? 'https://via.placeholder.com/150',
+    name: json['name'] ?? 'Unknown',
+    description: json['description'] ?? 'No description available',
+    author: json['author'] ?? 'Unknown Author',
+    genre: json['genre'] ?? 'Unknown Genre',
+    price: (json['price'] ?? 0).toDouble(),
+    stock: json['stock'] ?? 0,
+  );
+}
+
 }
