@@ -64,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       final token = result["token"];
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Login successful! Token: $token")),
+        SnackBar(content: Text("Login successful!")),
       );
       var _user = result['user'];
 
@@ -74,11 +74,11 @@ class _LoginPageState extends State<LoginPage> {
       // Load books based on the user
       Provider.of<BookProvider>(context, listen: false)
           .loadBooksForUser(_user!);
-      Navigator.pushReplacementNamed(context, AppRoutes.homepage);
+    
       // Load orders for the user
       Provider.of<OrderProvider>(context, listen: false)
-          .loadOrdersForUser(_user!.userId);
-      Navigator.pushReplacementNamed(context, AppRoutes.homepage);
+          .loadOrdersForUser(_user!.uid);
+      Navigator.pushReplacementNamed(context, AppRoutes.mainscreen);
     }
   }
 
@@ -100,7 +100,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: Container(
                     height: MediaQuery.of(context).size.height * 0.25,
                     width: double.infinity,
-                    color: Colors.redAccent,
+                    color: AppTheme.primaryColor,
                     padding: EdgeInsets.only(bottom: 50),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -144,7 +144,7 @@ class _LoginPageState extends State<LoginPage> {
                           decoration: Inputdeco.getDeco(
                               "Password", "Enter your password", passwordError),
                         ),
-                        SizedBox(height: 24),
+                        SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
@@ -175,7 +175,7 @@ class _LoginPageState extends State<LoginPage> {
                     padding: EdgeInsets.only(
                       right: 30,
                       left: 30,
-                      bottom: MediaQuery.of(context).viewInsets.bottom + 50,
+                      bottom: MediaQuery.of(context).viewInsets.bottom + 20,
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -185,7 +185,7 @@ class _LoginPageState extends State<LoginPage> {
                           CircularProgressIndicator()
                         else
                           SizedBox(
-                            width: 230, // Fixed width for both buttons
+                             // Fixed width for both buttons
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 minimumSize: Size(
@@ -214,7 +214,7 @@ class _LoginPageState extends State<LoginPage> {
                         ],
                         SizedBox(height: 15),
                         SizedBox(
-                          width: 230, // Fixed width for both buttons
+                           // Fixed width for both buttons
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               elevation: 0,
@@ -247,10 +247,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Image.asset("lib/assets/images/logo-pink.png"),
-                )
+                
               ],
             ),
           ),

@@ -131,7 +131,7 @@ class _ForgetPassPageState extends State<ForgetPassPage> {
                             style: ElevatedButton.styleFrom(
                               minimumSize: const Size(double.infinity, 55),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(30),
                               ),
                             ),
                             onPressed: validateInputs, 
