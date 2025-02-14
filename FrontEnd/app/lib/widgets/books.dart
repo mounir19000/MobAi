@@ -35,7 +35,7 @@ class BookGrid extends StatelessWidget {
               crossAxisCount: 2,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
-              childAspectRatio: 0.6,
+               mainAxisExtent: 300,
             ),
             itemBuilder: (context, index) {
               return BookCard(book: books[index]);
@@ -54,25 +54,33 @@ class BookCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: Image.network(
-            book.imageurl,
-            height: 180,
-            width: double.infinity,
-            fit: BoxFit.cover,
+    return Container(
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.network(
+              book.imageurl,
+              height: 180, 
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        SizedBox(height: 8),
-        Text(book.name,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        Text(book.author, style: TextStyle(fontSize: 14, color: Colors.grey)),
-        Text("${book.price}",
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-      ],
+          SizedBox(height: 8),
+          Text(book.name,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(book.author, style: TextStyle(fontSize: 14, color: Colors.grey)),
+          Text("${book.price}",
+              style: TextStyle(fontSize: 14, color: Colors.grey)),
+        ],
+      ),
     );
   }
 }
