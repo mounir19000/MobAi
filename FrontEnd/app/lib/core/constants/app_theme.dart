@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 
 class AppTheme {
@@ -7,12 +5,14 @@ class AppTheme {
 
   static final ThemeData lightTheme = ThemeData(
     primaryColor: primaryColor,
+    fontFamily: 'Poppins', // Set global font family
     appBarTheme: AppBarTheme(
       backgroundColor: primaryColor,
       titleTextStyle: TextStyle(
         color: Colors.white,
         fontSize: 20,
         fontWeight: FontWeight.bold,
+        fontFamily: 'Poppins', // Apply Poppins
       ),
       iconTheme: IconThemeData(color: Colors.white),
     ),
@@ -22,6 +22,7 @@ class AppTheme {
         textStyle: TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.bold,
+          fontFamily: 'Poppins',
         ),
       ),
     ),
@@ -30,7 +31,7 @@ class AppTheme {
       focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(color: primaryColor),
       ),
-      labelStyle: TextStyle(color: primaryColor),
+      labelStyle: TextStyle(color: primaryColor, fontFamily: 'Poppins'),
     ),
   );
 
@@ -42,6 +43,7 @@ class AppTheme {
         color: Colors.white,
         fontSize: 20,
         fontWeight: FontWeight.bold,
+        fontFamily: 'Poppins',
       ),
       iconTheme: IconThemeData(color: Colors.white),
     ),
@@ -51,6 +53,7 @@ class AppTheme {
         textStyle: TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.bold,
+          fontFamily: 'Poppins',
         ),
       ),
     ),
@@ -59,36 +62,39 @@ class AppTheme {
       focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(color: primaryColor),
       ),
-      labelStyle: TextStyle(color: primaryColor),
+      labelStyle: TextStyle(color: primaryColor, fontFamily: 'Poppins'),
     ),
   );
 }
 
 class Inputdeco {
-  static getDeco(String labelText, String hintText,String? ErrorName) {
+  static getDeco(String labelText, String hintText, String? errorName) {
     return InputDecoration(
-      errorText: ErrorName,
+      errorText: errorName,
       labelText: labelText,
       hintText: hintText,
       labelStyle: TextStyle(
-        color: Colors.grey, // Label color when not selected
+        color: Colors.grey,
+        fontFamily: 'Poppins', // Apply Poppins here
       ),
       floatingLabelStyle: TextStyle(
-        color: AppTheme.primaryColor, // Label color when focused
+        color: AppTheme.primaryColor,
+        fontFamily: 'Poppins',
       ),
       enabledBorder: OutlineInputBorder(
-          // Border when not selected
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(
-            color: Color(0xffE9EBED), 
-            width: 1)),
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(
+          color: Color(0xffE9EBED),
+          width: 1,
+        ),
+      ),
       focusedBorder: OutlineInputBorder(
-          // Border when focused
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(
-            width: 2,
-            color: AppTheme.primaryColor,
-          )),
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(
+          width: 2,
+          color: AppTheme.primaryColor,
+        ),
+      ),
     );
   }
 }
