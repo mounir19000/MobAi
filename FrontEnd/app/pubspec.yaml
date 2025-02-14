@@ -44,6 +44,7 @@ dependencies:
   google_nav_bar: ^5.0.7
   line_icons: ^2.0.3
   shared_preferences: ^2.5.2
+  flutter_svg: ^2.0.17
 
 dev_dependencies:
   flutter_test:
@@ -75,6 +76,16 @@ flutter:
     - lib/assets/images/Logo.png
     - lib/assets/images/logo-pink.png
     - lib/assets/images/logo-white.png
+    - lib/assets/icons/back.svg
+    - lib/assets/icons/logo-white.svg
+    - lib/assets/icons/star.svg
+    - lib/assets/icons/heart.svg
+    - lib/assets/icons/cart.svg
+    - lib/assets/icons/author.svg
+    - lib/assets/icons/calendar.svg
+    - lib/assets/icons/summary.svg
+    - lib/assets/icons/rating.svg
+    - lib/assets/images/bookdetailsbg.svg
    
   fonts:
     - family: Poppins

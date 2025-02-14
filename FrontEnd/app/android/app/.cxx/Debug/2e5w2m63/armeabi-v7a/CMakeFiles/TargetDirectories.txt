@@ -1,0 +1,2 @@
+C:/Users/HP/Documents/code/MobAi/FrontEnd/app/android/app/.cxx/Debug/2e5w2m63/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/HP/Documents/code/MobAi/FrontEnd/app/android/app/.cxx/Debug/2e5w2m63/armeabi-v7a/CMakeFiles/rebuild_cache.dir
