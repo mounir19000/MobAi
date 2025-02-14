@@ -59,8 +59,8 @@ class _RegisterPageState extends State<RegisterPage> {
       );
       var _user = result['user'];
 
-    // Set user in UserProvider
-    Provider.of<UserProvider>(context, listen: false).setUser(_user!);
+      // Set user in UserProvider
+      Provider.of<UserProvider>(context, listen: false).setUser(_user!);
     }
   }
 
@@ -105,7 +105,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: Container(
                       height: MediaQuery.of(context).size.height * 0.25,
                       width: double.infinity,
-                      color: Colors.redAccent,
+                      color: AppTheme.primaryColor,
                       child: Center(
                           child: Text(
                         "Create Account",
@@ -155,13 +155,26 @@ class _RegisterPageState extends State<RegisterPage> {
                               "Password", "Enter your password", passwordError),
                         ),
                         SizedBox(height: 50),
+                        Text(
+                          "By continuing, you agree to Terms of Use and Privacy Policy.",
+                          textAlign: TextAlign
+                              .center, // Center the text within its container
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black26,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
                         Column(
                           children: [
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 minimumSize: Size(double.infinity, 55),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(30),
                                 ),
                               ),
                               onPressed: () {
@@ -169,7 +182,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               },
                               child: Text(
                                 "Sign up",
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600),
                               ),
                             ),
                             SizedBox(height: 15),
@@ -177,11 +193,8 @@ class _RegisterPageState extends State<RegisterPage> {
                               style: ElevatedButton.styleFrom(
                                 elevation: 0,
                                 backgroundColor: Colors.transparent,
-                                minimumSize: Size(double.infinity, 55),
-                                side: BorderSide(
-                                    color: Color(0xffE9EBED), width: 1),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(30),
                                 ),
                               ),
                               onPressed: () {
@@ -189,7 +202,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     context, AppRoutes.login);
                               },
                               child: Text(
-                                "Already have an account?",
+                                "Already have an account?  Log in ",
                                 style: TextStyle(color: Color(0xFF818181)),
                               ),
                             ),

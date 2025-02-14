@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
 
-      initialRoute: AppRoutes.homepage, // Set initial screen
+      initialRoute: AppRoutes.pageview, // Set initial screen
       onGenerateRoute: (settings) {
         return AppRouter.generateRoute(settings); // Handle routes
       },
