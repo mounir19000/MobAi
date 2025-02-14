@@ -1,26 +1,28 @@
 from dotenv import load_dotenv
-from langchain import hub
-from langchain.agents import (
-    AgentExecutor,
-    create_react_agent,
-)
-from langchain_core.tools import tool
+from langchain.prompts import ChatPromptTemplate
+from langchain.schema.output_parser import StrOutputParser
+from langchain.schema.runnable import RunnableBranch
 from langchain_google_genai import ChatGoogleGenerativeAI
 import os
-
+from sentence_transformers import SentenceTransformer
 import faiss
 import numpy as np
-from sentence_transformers import SentenceTransformer
-
-import faiss
 import pickle
 
 load_dotenv()
-llm = ChatGoogleGenerativeAI(
+model = ChatGoogleGenerativeAI(
     model=os.getenv("GENAI_MODEL", "gemini-1.5-flash"),
     max_tokens=int(os.getenv("GENAI_MAX_TOKENS", 1024)),
     timeout=int(os.getenv("GENAI_TIMEOUT", 60)),
     max_retries=int(os.getenv("GENAI_MAX_RETRIES", 5)),
+)
+
+classification_template = ChatPromptTemplate.from_messages(
+    [
+        ("system", "You are an AI assistant that will help me classify the prompt."),
+        ("human",
+         "Classify the prompt as just searching for books (Label it as BookSearch) or want to buy a book (Label it as BuyBook): {prompt}."),
+    ]
 )
 
 # Initialize SentenceTransformer
@@ -31,8 +33,6 @@ book_ids = []
 book_vectors = []
 faiss_index = None
 
-# Dummy data
-# Dummy data (keeping the original data structures)
 dummy_books = [
     {
         "id": "book1",
@@ -192,6 +192,7 @@ dummy_orders = [
     }
 ]
 
+
 def initialize_faiss(dummy_books):
     global book_ids, book_vectors, faiss_index
     max_chunk_size = 1000
@@ -241,10 +242,7 @@ def load_faiss_data(index_file="faiss_index.bin", metadata_file="metadata.pkl"):
         book_vectors = metadata["book_vectors"]
     print(f"Metadata loaded from {metadata_file}")
 
-
-@tool
 def search_books(query):
-    """Search for books based on title, author, or genre"""
     global faiss_index, book_vectors, book_ids, dummy_books
     if not faiss_index or not book_vectors:
         return "FAISS index not initialized."
@@ -265,20 +263,49 @@ def search_books(query):
                     "genre": book["genre"],
                     "distance": distances[0][i]
                 })
-    return results
+    finalResult = {
+        "results": results,
+        "isBuying": False
+    }
+    return finalResult
 
-@tool
-def get_recommendations(user_id):
-    """Get personalized book recommendations based on user history"""
-    # Placeholder for user-specific recommendations
-    return f"Recommendations for user {user_id}"
+def process_purchase(query):
+    global faiss_index, book_vectors, book_ids, dummy_books
+    if not faiss_index or not book_vectors:
+        return {"results": None, "isBuying": True}
 
+    query_vector = embedding_model.encode(query).reshape(1, -1)
+    distances, indices = faiss_index.search(query_vector, 1)  # Return only the closest match
 
-@tool
-def process_purchase(user_id, book_id):
-    """Process a book purchase and get user's default information"""
-    # Placeholder for processing book purchase
-    return f"Purchase processed for user {user_id} and book {book_id}"
+    if indices[0][0] < len(book_ids):
+        book_id = book_ids[indices[0][0]]
+        book = next((b for b in dummy_books if b["id"] == book_id), None)
+        if book:
+            best_book = {
+                "book_id": book["id"],
+                "name": book["name"],
+                "author": book["author"],
+                "genre": book["genre"],
+                "price": book["price"],
+                "stock": book["stock"],
+                "distance": distances[0][0]
+            }
+            return {"results": best_book, "isBuying": True}
+    
+    return {"results": None, "isBuying": True}
+
+branches = RunnableBranch(
+    (
+        lambda x: "BookSearch" in x,  # x is the classification output (a string)
+        lambda _: search_books(_)  # Pass only the string to search_books
+    ),
+    (
+        lambda x: "BuyBook" in x,
+        lambda _: process_purchase(_)  # Pass only the string to process_purchase
+    ),
+    lambda _: "Invalid request. Please specify a valid book-related query."  # Default case
+)
+
 
 # # Initialize FAISS index
 # initialize_faiss(dummy_books)
@@ -286,20 +313,12 @@ def process_purchase(user_id, book_id):
 
 load_faiss_data()
 
-agent = create_react_agent(
-    llm=llm,
-    tools=[search_books, get_recommendations, process_purchase],
-    prompt=hub.pull("hwchase17/react"),
-    stop_sequence=True,
-)
+classification_chain = classification_template | model | StrOutputParser()
 
-agent_executor = AgentExecutor.from_agent_and_tools(
-    agent=agent,
-    tools=[search_books, get_recommendations, process_purchase],
-    verbose=True,
-)
+chain = classification_chain | branches
 
-# Run the agent with a test query
-response = agent_executor.invoke({"input": "I want to find a book about artificial intelligence"})
-print("response:", response)
+# result = chain.invoke({"prompt": "I want to read a book about artificial inteligence"})
+result = chain.invoke({"prompt": "Buy me a good book about artificial inteligence"})
 
+# Output the result
+print(result)
