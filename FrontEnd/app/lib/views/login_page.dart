@@ -195,8 +195,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                               onPressed: () {
-                                Navigator.pushReplacementNamed(
-                                    context, AppRoutes.homepage);
+                                validateInputs();
                               },
                               child: Text(
                                 "Login",
