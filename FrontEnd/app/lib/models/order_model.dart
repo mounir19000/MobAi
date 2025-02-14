@@ -45,4 +45,19 @@ class OrderModel {
       address: json['address']
     );
   }
+
+    factory OrderModel.fromMap(Map<String, dynamic> map) {
+    return OrderModel(
+      orderId: map['orderId'],
+      status: map['status'],
+
+      userId: map['userId'],
+      items: List<Map<String, dynamic>>.from(map['items'] ?? []),
+      total: map['total'].toDouble(),
+      
+      name: map['name'],
+      phonenumber: map['phonenumber'],
+      address: map['address']
+    );
+  }
 }

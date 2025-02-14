@@ -81,7 +81,7 @@ class _MyPageViewState extends State<MyPageView> with TickerProviderStateMixin {
               ],
             ),
             Positioned(
-              bottom: 140.0,
+              bottom: 110.0,
               child: _buildPageIndicator(),
             ),
           ],
@@ -90,7 +90,7 @@ class _MyPageViewState extends State<MyPageView> with TickerProviderStateMixin {
           width: double.infinity, // Ensures the Row is centered
           // color: AppTheme.primaryColor,
           padding: const EdgeInsets.fromLTRB(
-              40, 10, 0, 0), // Adds spacing
+              40, 10, 0, 20), // Adds spacing
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center, // Centers the buttons
             children: [
@@ -98,19 +98,12 @@ class _MyPageViewState extends State<MyPageView> with TickerProviderStateMixin {
               SizedBox(
                 width: 120,
                 height: 50,
-                child: OutlinedButton(
+                child: TextButton(
                   onPressed: () {
                     Navigator.pushReplacementNamed(context, AppRoutes.login);
                   },
-                  style: OutlinedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    side: BorderSide(
-                        color: AppTheme.primaryColor, width: 2), // Border color
-                  ),
                   child: const Text(
-                    "Skip",
+                    "skip",
                     style: TextStyle(
                       color: AppTheme.primaryColor,
                       fontSize: 18,
