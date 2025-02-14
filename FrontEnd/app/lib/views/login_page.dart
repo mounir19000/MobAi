@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../core/constants/app_theme.dart';
 import '../core/constants/top_curve.dart';
-import '../core/services/auth_sevice.dart';
+import '../core/services/auth_service.dart';
 import '../core/services/responsive.dart';
 
 class LoginPage extends StatefulWidget {
@@ -31,41 +31,41 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     if (emailAddressError == null && passwordError == null) {
-      // Navigator.pushReplacementNamed(context, AppRoutes.strorelist);
-      // _login();
+      _login();
     }
   }
 
   bool _isLoading = false;
   String? _errorMessage;
 
-  void _login() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
+void _login() async {
+  setState(() {
+    _isLoading = true;
+    _errorMessage = null;
+  });
 
-    final result = await _authService.login(
-      _emailController.text.trim(),
-      _passwordController.text.trim(),
+  final result = await _authService.signIn(
+    _emailController.text.trim(),
+    _passwordController.text.trim(),
+  );
+
+  setState(() {
+    _isLoading = false;
+  });
+
+  if (result["error"] == true) {
+    setState(() {
+      _errorMessage = result["message"];
+    });
+  } else {
+    final token = result["token"];
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Login successful! Token: $token")),
     );
-
-    setState(() {
-      _isLoading = false;
-    });
-
-    if (result["error"] == true) {
-      setState(() {
-        _errorMessage = result["message"];
-      });
-    } else {
-      final token = result["token"];
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Login successful! Token: $token")),
-      );
-      // Navigate to the next screen or save the token as needed
-    }
+    Navigator.pushReplacementNamed(context, AppRoutes.homepage);
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -119,10 +119,15 @@ class _LoginPageState extends State<LoginPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text(
-                              "Forget your password ?",
-                              style: const TextStyle(
-                                  fontSize: 12, color: Color(0xFFA1A1A1)),
+                            TextButton(
+                              onPressed: () {Navigator.pushReplacementNamed(
+                                context, AppRoutes.forgetpass);} ,
+                              child: Text(
+                                "Forget your password ?",
+                                style: const TextStyle(
+                                  decoration: TextDecoration.underline,
+                                    fontSize: 12, color: Color.fromARGB(255, 0, 0, 0)),
+                              ),
                             ),
                           ],
                         ),
@@ -150,7 +155,10 @@ class _LoginPageState extends State<LoginPage> {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushReplacementNamed(
+                                  context, AppRoutes.homepage);
+                            },
                             child: Text(
                               "login",
                               style: TextStyle(color: Colors.white),
