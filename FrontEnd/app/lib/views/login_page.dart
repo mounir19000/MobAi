@@ -1,10 +1,14 @@
 import 'package:app/routes/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../core/constants/app_theme.dart';
 import '../core/constants/top_curve.dart';
 import '../core/services/auth_service.dart';
 import '../core/services/responsive.dart';
+import '../state/book_provider.dart';
+import '../state/order_provider.dart';
+import '../state/user_provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -38,34 +42,45 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
   String? _errorMessage;
 
-void _login() async {
-  setState(() {
-    _isLoading = true;
-    _errorMessage = null;
-  });
-
-  final result = await _authService.signIn(
-    _emailController.text.trim(),
-    _passwordController.text.trim(),
-  );
-
-  setState(() {
-    _isLoading = false;
-  });
-
-  if (result["error"] == true) {
+  void _login() async {
     setState(() {
-      _errorMessage = result["message"];
+      _isLoading = true;
+      _errorMessage = null;
     });
-  } else {
-    final token = result["token"];
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Login successful! Token: $token")),
-    );
-    Navigator.pushReplacementNamed(context, AppRoutes.homepage);
-  }
-}
 
+    final result = await _authService.signIn(
+      _emailController.text.trim(),
+      _passwordController.text.trim(),
+    );
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (result["error"] == true) {
+      setState(() {
+        _errorMessage = result["message"];
+      });
+    } else {
+      final token = result["token"];
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Login successful! Token: $token")),
+      );
+      var _user = result['user'];
+
+      // Set user in UserProvider
+      Provider.of<UserProvider>(context, listen: false).setUser(_user!);
+
+      // Load books based on the user
+      Provider.of<BookProvider>(context, listen: false)
+          .loadBooksForUser(_user!);
+      Navigator.pushReplacementNamed(context, AppRoutes.homepage);
+      // Load orders for the user
+      Provider.of<OrderProvider>(context, listen: false)
+          .loadOrdersForUser(_user!.userId);
+      Navigator.pushReplacementNamed(context, AppRoutes.homepage);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,27 +96,30 @@ void _login() async {
             child: Stack(
               children: [
                 ClipPath(
-                          clipper: OnboardingClipper(),
-                          child: Container(
-                            height: MediaQuery.of(context).size.height * 0.25,
-                            width: double.infinity,
-                            color: Colors.redAccent,
-                            child: Center(child: Text("Welcome",
-                            style: const TextStyle(
-                            color: Colors.white,
-                               fontSize: 28, fontWeight: FontWeight.bold),)),
-                          ),
-                        ),
+                  clipper: OnboardingClipper(),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.25,
+                    width: double.infinity,
+                    color: Colors.redAccent,
+                    child: Center(
+                        child: Text(
+                      "Welcome",
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold),
+                    )),
+                  ),
+                ),
                 SingleChildScrollView(
                   child: Container(
-                    
-                    margin: const EdgeInsets.fromLTRB(20,0,20,20),
-                    padding: const EdgeInsets.fromLTRB(10,0,10,10),
+                    margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        
-                        SizedBox(height: MediaQuery.of(context).size.height * 0.25),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.25),
                         TextField(
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
@@ -120,13 +138,16 @@ void _login() async {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             TextButton(
-                              onPressed: () {Navigator.pushReplacementNamed(
-                                context, AppRoutes.forgetpass);} ,
+                              onPressed: () {
+                                Navigator.pushReplacementNamed(
+                                    context, AppRoutes.forgetpass);
+                              },
                               child: Text(
                                 "Forget your password ?",
                                 style: const TextStyle(
-                                  decoration: TextDecoration.underline,
-                                    fontSize: 12, color: Color.fromARGB(255, 0, 0, 0)),
+                                    decoration: TextDecoration.underline,
+                                    fontSize: 12,
+                                    color: Color.fromARGB(255, 0, 0, 0)),
                               ),
                             ),
                           ],
@@ -203,5 +224,4 @@ void _login() async {
       ),
     );
   }
-  
 }

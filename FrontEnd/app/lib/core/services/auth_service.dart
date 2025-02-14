@@ -77,6 +77,7 @@ Future<Map<String, dynamic>> signUp(String email, String password, String userna
           "token": await user.getIdToken(), // Firebase token
         };
       }
+      
     }
 
     return {
