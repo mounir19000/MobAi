@@ -4,7 +4,7 @@ import 'package:app/views/home_page.dart';
 import 'package:app/views/my_pagview.dart';
 import 'package:flutter/material.dart';
 
-import '../views/forget_pass_page';
+import '../views/forget_pass_page.dart';
 import '../views/login_page.dart';
 import '../views/register_page.dart';
 
