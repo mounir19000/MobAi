@@ -21,9 +21,11 @@ class BookGrid extends StatelessWidget {
 
         List<BookModel> books = snapshot.data!.docs.map((doc) {
           print("Firestore Data: ${doc.data()}"); // Debugging
+          
           return BookModel.fromJson(
               doc.data() as Map<String, dynamic>, doc.id); // ✅ Pass document ID
         }).toList();
+
 
         return Padding(
           padding: const EdgeInsets.all(16.0),
