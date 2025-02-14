@@ -1,6 +1,6 @@
+import 'package:app/views/book_details_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
 import '../models/book_model.dart';
 
 class BookGrid extends StatelessWidget {
@@ -20,12 +20,8 @@ class BookGrid extends StatelessWidget {
         }
 
         List<BookModel> books = snapshot.data!.docs.map((doc) {
-          print("Firestore Data: ${doc.data()}"); // Debugging
-          
-          return BookModel.fromJson(
-              doc.data() as Map<String, dynamic>, doc.id); // ✅ Pass document ID
+          return BookModel.fromJson(doc.data() as Map<String, dynamic>, doc.id);
         }).toList();
-
 
         return Padding(
           padding: const EdgeInsets.all(16.0),
@@ -54,25 +50,35 @@ class BookCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: Image.network(
-            book.imageurl,
-            height: 180,
-            width: double.infinity,
-            fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BookDetailsPage(book: book),
           ),
-        ),
-        SizedBox(height: 8),
-        Text(book.name,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        Text(book.author, style: TextStyle(fontSize: 14, color: Colors.grey)),
-        Text("${book.price}",
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-      ],
+        );
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.network(
+              book.imageurl,
+              height: 180,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(book.name,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(book.author, style: TextStyle(fontSize: 14, color: Colors.grey)),
+          Text("${book.price}",
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+        ],
+      ),
     );
   }
 }

@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
       title: 'Books Demo',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      initialRoute: AppRoutes.homepage, // Set initial screen
+      initialRoute: AppRoutes.mainscreen, // Set initial screen
       onGenerateRoute: (settings) {
         return AppRouter.generateRoute(settings); // Handle routes
       },
