@@ -1,10 +1,14 @@
 import 'package:app/routes/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../core/constants/app_theme.dart';
 import '../core/constants/top_curve.dart';
 import '../core/services/auth_service.dart';
 import '../core/services/responsive.dart';
+import '../state/book_provider.dart';
+import '../state/order_provider.dart';
+import '../state/user_provider.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -53,7 +57,10 @@ class _RegisterPageState extends State<RegisterPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(result["message"])),
       );
-      Navigator.pushReplacementNamed(context, AppRoutes.homepage);
+      var _user = result['user'];
+
+    // Set user in UserProvider
+    Provider.of<UserProvider>(context, listen: false).setUser(_user!);
     }
   }
 

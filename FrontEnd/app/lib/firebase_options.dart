@@ -59,4 +59,5 @@ class DefaultFirebaseOptions {
     projectId: 'sh4mo-daf30',
     storageBucket: 'sh4mo-daf30.firebasestorage.app',
   );
+
 }
