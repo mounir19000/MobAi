@@ -61,6 +61,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
       // Set user in UserProvider
       Provider.of<UserProvider>(context, listen: false).setUser(_user!);
+      Navigator.pushReplacementNamed(context, AppRoutes.mainscreen);
+
     }
   }
 
@@ -189,14 +191,8 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                             ),
                             SizedBox(height: 15),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                elevation: 0,
-                                backgroundColor: Colors.transparent,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                              ),
+                            TextButton(
+                              
                               onPressed: () {
                                 Navigator.pushReplacementNamed(
                                     context, AppRoutes.login);

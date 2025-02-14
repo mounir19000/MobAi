@@ -67,4 +67,16 @@ class BookService {
       rethrow;
     }
   }
+
+    Stream<List<BookModel>> searchBooks(String query) {
+    return _firestore
+        .collection('books')
+        .where('name', isGreaterThanOrEqualTo: query)
+        .where('name', isLessThanOrEqualTo: query + '\uf8ff') // Firestore string range query
+        .snapshots()
+        .map((snapshot) =>
+            snapshot.docs.map((doc) => BookModel.fromJson(doc.data()..['id'] = doc.id)).toList());
+  }
+
+  
 }
