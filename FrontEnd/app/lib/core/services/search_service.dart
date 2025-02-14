@@ -20,7 +20,7 @@ class SearchService {
       if (response.statusCode == 200) {
         Map<String, dynamic> data = jsonDecode(response.body);
         List<BookModel> books = (data["books"] as List)
-            .map((book) => BookModel.fromJson(book))
+            .map((book) => BookModel.fromJson(book, book["id"]))
             .toList();
         List<Map<String, dynamic>> booksdata = List<Map<String, dynamic>>.from(data["books"]);
         bool buy = data["buy"];
