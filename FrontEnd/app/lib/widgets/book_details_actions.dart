@@ -1,3 +1,4 @@
+import 'package:app/views/book_summary_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:app/core/constants/app_theme.dart';
@@ -39,12 +40,12 @@ class BookDetailsActions extends StatelessWidget {
                 SizedBox(height: 10),
                 ElevatedButton.icon(
                   onPressed: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => BookSummaryPage(book: book),
-                    //   ),
-                    // );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BookSummaryPage(book: book),
+                      ),
+                    );
                   },
                   icon: SvgPicture.asset("lib/assets/icons/summary.svg",
                       height: 20),
