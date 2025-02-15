@@ -26,30 +26,34 @@ class BookDetailsActions extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                TextButton.icon(
-                  onPressed: () {
-                  Provider.of<UserProvider>(context, listen: false).addToWishlist(book.bookId);
-
-                  },
-                  label: Text(
-                    "Add to Wishlist",
-                    style: TextStyle(
+                Consumer<UserProvider>(
+                  builder: (context, userProvider, child) {
+                    bool isFavorite = userProvider.user!.wishlist.contains(book.bookId);
+                    return TextButton.icon(
+                      onPressed: () {
+                        isFavorite? userProvider.removeFromWishlist(book.bookId):
+                          userProvider.addToWishlist(book.bookId);
+                      },
+                      label: Text(
+                        isFavorite ? "Remove from Wishlist" : "Add to Wishlist",
+                        style: TextStyle(
+                          color: AppTheme.primaryColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      icon: Icon(
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
                         color: AppTheme.primaryColor,
-                        fontWeight: FontWeight.w600),
-                  ),
-                  icon: SvgPicture.asset("lib/assets/icons/heart.svg"),
+                      ),
+                    );
+                  },
                 ),
                 SizedBox(height: 10),
                 AddToCartWidget(),
                 SizedBox(height: 10),
                 ElevatedButton.icon(
                   onPressed: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => BookSummaryPage(book: book),
-                    //   ),
-                    // );
+                    // Navigate to book summary
                   },
                   icon: SvgPicture.asset("lib/assets/icons/summary.svg",
                       height: 20),
