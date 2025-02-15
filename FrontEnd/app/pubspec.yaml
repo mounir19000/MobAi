@@ -45,6 +45,8 @@ dependencies:
   line_icons: ^2.0.3
   shared_preferences: ^2.5.2
   flutter_svg: ^2.0.17
+  permission_handler: ^11.3.1
+  speech_to_text: ^7.0.0
 
 dev_dependencies:
   flutter_test:

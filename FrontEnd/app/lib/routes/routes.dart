@@ -1,5 +1,6 @@
 // routes.dart
 
+import 'package:app/views/book_details_page.dart';
 import 'package:app/views/home_page.dart';
 import 'package:app/views/main_screen.dart';
 import 'package:app/views/my_pagview.dart';
@@ -8,6 +9,7 @@ import 'package:app/views/cart_page.dart';
 import 'package:app/views/wishlist_page.dart';
 import 'package:flutter/material.dart';
 
+import '../models/book_model.dart';
 import '../views/forget_pass_page.dart';
 import '../views/login_page.dart';
 import '../views/register_page.dart';
@@ -24,6 +26,8 @@ class AppRoutes {
   static const String profilepage = '/profilepage';
   static const String cartpage = '/cartpage';
   static const String wishlistpage = '/wishlistpage';
+  static const String book_details_page = '/book_details_page';
+
   // static const String select_user_role = '/select_user_role';
   // static const String map = '/map';
   // static const String storeDetail = '/storeDetail';
@@ -53,6 +57,10 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => ProfilePage());
       case AppRoutes.wishlistpage:
         return MaterialPageRoute(builder: (_) => WishlistPage());
+      case AppRoutes.book_details_page:
+        final args = settings.arguments as BookModel; // Expecting a book
+        return MaterialPageRoute(builder: (_) => BookDetailsPage(book: args));
+
       // case AppRoutes.storeDetail:
       //   final storeId = settings.arguments as String;
       //   return MaterialPageRoute(
