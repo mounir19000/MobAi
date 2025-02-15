@@ -25,20 +25,6 @@ def load_books(json_file="books.json"):
         print(f"Error loading books: {e}")
         return []
 
-model = ChatGoogleGenerativeAI(
-    model=os.getenv("GENAI_MODEL", "gemini-1.5-flash"),
-    max_tokens=int(os.getenv("GENAI_MAX_TOKENS", 1024)),
-    timeout=int(os.getenv("GENAI_TIMEOUT", 60)),
-    max_retries=int(os.getenv("GENAI_MAX_RETRIES", 5)),
-)
-
-classification_template = ChatPromptTemplate.from_messages(
-    [
-        ("system", "You are an AI assistant that will help me classify the prompt."),
-        ("human",
-         "Classify the prompt as just searching for books (Label it as BookSearch) or want to buy a book (Label it as BuyBook): {prompt}."),
-    ]
-)
 
 # Initialize SentenceTransformer
 embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
@@ -147,7 +133,7 @@ def book_recommender(user, user_orders):
     recommended_book_ids -= user_bought_books
 
     # Retrieve wishlist books and prioritize them
-    wishlist_books = [book for book in books if book["bookid"] in user_wishlist]
+    wishlist_books = [book for book in books if book["id"] in user_wishlist]
 
     # Retrieve other recommended books
     other_books = [book for book in books if book["id"] in recommended_book_ids]

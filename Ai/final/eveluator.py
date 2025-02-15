@@ -43,7 +43,7 @@ def generate_test_prompts():
         f"- Sample book titles: {', '.join(book_titles)}\n"
         f"- Genres: {', '.join(genres)}\n"
         f"- Authors: {', '.join(authors)}\n\n"
-        "Generate 10 test prompts that a user might use to search for books in this database. "
+        "Generate 4 test prompts that a user might use to search for books in this database. "
         "Make some specific (e.g., mentioning a genre, author, or theme) and others vague (e.g., 'something exciting'). "
         "Ensure they are diverse and relevant to the given database."
         "Generate only the prompts and nothing more."
