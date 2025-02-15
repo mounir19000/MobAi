@@ -2,6 +2,7 @@ import 'package:app/views/book_details_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../models/book_model.dart';
+import '../routes/routes.dart';
 
 class BookGrid extends StatelessWidget {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -31,7 +32,7 @@ class BookGrid extends StatelessWidget {
               crossAxisCount: 2,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
-               mainAxisExtent: 300,
+              mainAxisExtent: 300,
             ),
             itemBuilder: (context, index) {
               return BookCard(book: books[index]);
@@ -52,11 +53,11 @@ class BookCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
+        print("Tapped on ${book.name}");
+        Navigator.pushNamed(
           context,
-          MaterialPageRoute(
-            builder: (context) => BookDetailsPage(book: book),
-          ),
+          AppRoutes.book_details_page,
+          arguments: book, 
         );
       },
       child: Column(
@@ -79,6 +80,59 @@ class BookCard extends StatelessWidget {
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
         ],
       ),
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+class BookGridOfWishlist extends StatelessWidget {
+  final List<int> wishlist; // List of book IDs
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  BookGridOfWishlist({required this.wishlist});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: _firestore.collection('books').where('id', whereIn: wishlist).snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return Center(child: Text("No books in your wishlist"));
+        }
+
+        List<BookModel> books = snapshot.data!.docs.map((doc) {
+          return BookModel.fromJson(doc.data() as Map<String, dynamic>, doc.id);
+        }).toList();
+
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: GridView.builder(
+            itemCount: books.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              mainAxisExtent: 300,
+            ),
+            itemBuilder: (context, index) {
+              return BookCard(book: books[index]);
+            },
+          ),
+        );
+      },
     );
   }
 }
