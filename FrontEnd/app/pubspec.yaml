@@ -94,6 +94,7 @@ flutter:
     - lib/assets/images/bookdetailsbg.svg
     - lib/assets/images/booksummarybg.svg
     - lib/assets/images/cartbg.svg
+    - lib/assets/images/book-cover.png
    
   fonts:
     - family: Poppins
