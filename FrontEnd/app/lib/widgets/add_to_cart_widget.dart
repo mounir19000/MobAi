@@ -15,6 +15,7 @@ class _AddToCartWidgetState extends State<AddToCartWidget> {
     setState(() {
       isAddingToCart = !isAddingToCart;
     });
+    
   }
 
   void incrementQuantity() {

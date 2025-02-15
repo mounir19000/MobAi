@@ -103,7 +103,7 @@ class BookGridOfWishlist extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: _firestore.collection('books').where('id', whereIn: wishlist).snapshots(),
+      stream: _firestore.collection('books').where('bookId', whereIn: wishlist).snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
