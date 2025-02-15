@@ -34,6 +34,7 @@ class BookDetailsPage extends StatelessWidget {
                 BookDetailsHeader(book: book),
                 BookDetailsActions(book: book),
                 BookDetailsInfo(book: book),
+                SizedBox(height: 40),
               ],
             ),
           ],
