@@ -1,0 +1,74 @@
+[
+  {
+    "id": "book4",
+    "bookid": 4,
+    "imageurl": "https://example.com/book4.jpg",
+    "name": "AI for Everyone",
+    "author": "Michael Brown",
+    "genre": "Educational",
+    "price": 24.99,
+    "stock": 40,
+    "description": "A comprehensive guide to understanding artificial intelligence for non-experts.",
+    "rating": 4.5
+  },
+  {
+    "id": "book1",
+    "bookid": 1,
+    "imageurl": "https://example.com/book1.jpg",
+    "name": "The AI Revolution",
+    "author": "John Smith",
+    "genre": "Science Fiction",
+    "price": 29.99,
+    "stock": 50,
+    "description": "A thrilling exploration of the future of artificial intelligence.",
+    "rating": 4.5
+  },
+  {
+    "id": "book8",
+    "bookid": 8,
+    "imageurl": "https://example.com/book8.jpg",
+    "name": "AI and Ethics",
+    "author": "Emily White",
+    "genre": "Educational",
+    "price": 29.99,
+    "stock": 45,
+    "description": "A deep dive into the ethical considerations surrounding artificial intelligence.",
+    "rating": 4.5
+  },
+  {
+    "id": "book2",
+    "bookid": 2,
+    "imageurl": "https://example.com/book2.jpg",
+    "name": "Machine Learning Basics",
+    "author": "Jane Doe",
+    "genre": "Educational",
+    "price": 39.99,
+    "stock": 30,
+    "description": "An introductory guide to the fundamentals of machine learning.",
+    "rating": 4.5
+  },
+  {
+    "id": "book7",
+    "bookid": 7,
+    "imageurl": "https://example.com/book7.jpg",
+    "name": "AI in Healthcare",
+    "author": "Dr. Sarah Lee",
+    "genre": "Educational",
+    "price": 39.99,
+    "stock": 35,
+    "description": "Explore the impact of artificial intelligence on the healthcare industry.",
+    "rating": 4.5
+  },
+  {
+    "id": "book3",
+    "bookid": 3,
+    "imageurl": "https://example.com/book3.jpg",
+    "name": "Deep Learning Advanced",
+    "author": "Alice Johnson",
+    "genre": "Educational",
+    "price": 49.99,
+    "stock": 20,
+    "description": "An advanced textbook on deep learning techniques and applications.",
+    "rating": 4.5
+  }
+]
