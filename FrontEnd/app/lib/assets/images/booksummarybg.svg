@@ -1,0 +1,7 @@
+<svg width="430" height="590" viewBox="0 0 430 590" fill="none" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="626.5" cy="562.5" rx="626.5" ry="562.5" transform="matrix(1 0 0 -1 -430 1153)" fill="#F07168"/>
+<path d="M794 562.5C794 252.522 503.797 1 145.5 1C-212.797 1 -503 252.522 -503 562.5C-503 872.478 -212.797 1124 145.5 1124C503.797 1124 794 872.478 794 562.5Z" stroke="#F07168" stroke-width="2"/>
+<circle cx="383" cy="383" r="382" transform="matrix(1 0 0 -1 113 1085)" stroke="white" stroke-opacity="0.27" stroke-width="2"/>
+<circle cx="383" cy="383" r="382" transform="matrix(1 0 0 -1 196 1012)" stroke="white" stroke-opacity="0.27" stroke-width="2"/>
+<circle cx="383" cy="383" r="382" transform="matrix(1 0 0 -1 -91 973)" stroke="white" stroke-opacity="0.3" stroke-width="2"/>
+</svg>

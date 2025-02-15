@@ -80,12 +80,17 @@ flutter:
     - lib/assets/icons/logo-white.svg
     - lib/assets/icons/star.svg
     - lib/assets/icons/heart.svg
+    - lib/assets/icons/heart-white.svg
     - lib/assets/icons/cart.svg
     - lib/assets/icons/author.svg
     - lib/assets/icons/calendar.svg
+    - lib/assets/icons/author-white.svg
+    - lib/assets/icons/calendar-white.svg
     - lib/assets/icons/summary.svg
     - lib/assets/icons/rating.svg
+    - lib/assets/icons/rating-white.svg
     - lib/assets/images/bookdetailsbg.svg
+    - lib/assets/images/booksummarybg.svg
    
   fonts:
     - family: Poppins
