@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:app/core/constants/app_theme.dart';
 import 'package:app/widgets/add_to_cart_widget.dart';
+import 'package:provider/provider.dart';
 import '../models/book_model.dart';
+import '../state/user_provider.dart';
 
 class BookDetailsActions extends StatelessWidget {
   final BookModel book;
@@ -25,7 +27,10 @@ class BookDetailsActions extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 TextButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                  Provider.of<UserProvider>(context, listen: false).addToWishlist(book.bookId);
+
+                  },
                   label: Text(
                     "Add to Wishlist",
                     style: TextStyle(

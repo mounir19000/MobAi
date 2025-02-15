@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:permission_handler/permission_handler.dart';
 
 import '../core/constants/top_curve.dart';
 import '../core/services/book_service.dart';
@@ -17,23 +19,48 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   late TextEditingController _searchController;
   Stream<List<BookModel>>? _searchResults;
   final BookService _bookService = BookService();
   late TabController _tabController;
+  late stt.SpeechToText _speech;
+  late ValueNotifier<bool> _isListeningNotifier;
 
   @override
   void initState() {
+    super.initState();
     _searchController = TextEditingController();
     _tabController = TabController(length: 2, vsync: this);
-    super.initState();
+    _speech = stt.SpeechToText();
+    _isListeningNotifier = ValueNotifier(false);
+    _initializeSpeech();
+    _requestPermissions();
+  }
+
+  Future<void> _initializeSpeech() async {
+    bool available = await _speech.initialize(
+      onStatus: (val) => print('onStatus: $val'),
+      onError: (val) => print('Speech recognition error: $val'),
+    );
+    if (!available) {
+      print("Speech recognition not available");
+    }
+  }
+
+  Future<void> _requestPermissions() async {
+    var status = await Permission.microphone.request();
+    if (status.isDenied || status.isPermanentlyDenied) {
+      openAppSettings();
+    }
   }
 
   @override
   void dispose() {
     _searchController.dispose();
     _tabController.dispose();
+    _isListeningNotifier.dispose();
     super.dispose();
   }
 
@@ -42,6 +69,27 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       setState(() => _searchResults = null);
     } else {
       setState(() => _searchResults = _bookService.searchBooks(query));
+    }
+  }
+
+  void _listen() async {
+    var status = await Permission.microphone.request();
+    if (status.isGranted) {
+      if (!_isListeningNotifier.value) {
+        _isListeningNotifier.value = true;
+        _speech.listen(
+          localeId: 'en_US',
+          onResult: (val) {
+            _searchController.text = val.recognizedWords;
+            _searchBooks(val.recognizedWords);
+          },
+        );
+      } else {
+        _isListeningNotifier.value = false;
+        _speech.stop();
+      }
+    } else {
+      print("Microphone permission denied");
     }
   }
 
@@ -54,7 +102,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       child: SafeArea(
         child: Scaffold(
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(330),
+            preferredSize: const Size.fromHeight(330),
             child: Stack(
               children: [
                 ClipPath(
@@ -62,7 +110,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   child: Container(
                     height: MediaQuery.of(context).size.height * 0.38,
                     width: double.infinity,
-                    color: Colors.redAccent,
+                    color: AppTheme.primaryColor,
                   ),
                 ),
                 Padding(
@@ -81,7 +129,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                           const SizedBox(width: 20),
                         ],
                       ),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       Text(
                         "Hello, ${userProvider.user?.username}",
                         style: const TextStyle(
@@ -90,32 +138,32 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                           color: Colors.white,
                         ),
                       ),
-                      SizedBox(height: 4),
-                      Text(
+                      const SizedBox(height: 4),
+                      const Text(
                         "What do you want to read today?",
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           color: Colors.white,
                         ),
                       ),
-                      SizedBox(height: 25),
+                      const SizedBox(height: 25),
                       _searchBox(),
                     ],
                   ),
                 ),
-                
                 Positioned(
                   bottom: 0,
                   left: 0,
                   right: 0,
                   child: TabBar(
                     controller: _tabController,
-                    indicatorColor: Color(0xFF0B5268),
-                    labelColor: Color(0xFF0B5268),
-                    dividerColor: Colors.transparent, 
+                    indicatorColor: const Color(0xFF0B5268),
+                    labelColor: const Color(0xFF0B5268),
+                    dividerColor: Colors.transparent,
                     unselectedLabelColor: Colors.grey,
-                    labelStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    tabs: [
+                    labelStyle: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
+                    tabs: const [
                       Tab(text: "For you"),
                       Tab(text: "My books"),
                     ],
@@ -131,13 +179,14 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   controller: _tabController,
                   children: [
                     BookGrid(),
-                    Center(child: Text("My Books", style: TextStyle(fontSize: 18))),
+                    const Center(
+                      child: Text("My Books", style: TextStyle(fontSize: 18)),
+                    ),
                   ],
                 ),
               ),
             ],
           ),
-          
         ),
       ),
     );
@@ -145,9 +194,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   Widget _searchBox() {
     return Container(
-      height: 55,
+      
       width: kIsWeb ? 450 : double.infinity,
-      padding: EdgeInsets.fromLTRB(8, 2, 8, 2),
+      padding: const EdgeInsets.fromLTRB(8, 2, 8, 2),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(80)),
         color: Colors.white,
@@ -155,6 +204,15 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       child: Row(
         children: [
           _searchField(),
+          ValueListenableBuilder<bool>(
+            valueListenable: _isListeningNotifier,
+            builder: (context, isListening, child) {
+              return IconButton(
+                icon: Icon(!isListening ? Icons.mic_off : Icons.mic),
+                onPressed: _listen,
+              );
+            },
+          ),
         ],
       ),
     );
@@ -163,22 +221,16 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   Widget _searchField() {
     return Expanded(
       child: TextField(
+        minLines: 1, // ✅ Starts small
+        maxLines: 1, // ✅ Grows when typing
         controller: _searchController,
         keyboardType: TextInputType.text,
         textCapitalization: TextCapitalization.sentences,
         textAlign: TextAlign.start,
-        style: TextStyle(fontSize: 18, color: Colors.black),
+        style: const TextStyle(fontSize: 18, color: Colors.black),
         decoration: InputDecoration(
           hintText: "Search books...",
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(30.0)),
-            borderSide: BorderSide.none,
-          ),
-          disabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(30.0)),
-            borderSide: BorderSide.none,
-          ),
-          enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(30.0)),
             borderSide: BorderSide.none,
           ),
