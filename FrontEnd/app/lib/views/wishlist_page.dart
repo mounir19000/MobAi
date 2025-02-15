@@ -1,5 +1,6 @@
 import 'package:app/core/constants/top_curve.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../core/constants/app_theme.dart';
 import '../state/user_provider.dart';
@@ -11,7 +12,7 @@ class WishlistPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userProvider = UserProvider();
-  
+
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
@@ -38,12 +39,21 @@ class WishlistPage extends StatelessWidget {
           ),
         ),
         body: Column(
-  children: [
-    Expanded(
-      child: BookGridOfWishlist(wishlist: userProvider.user!.wishlist,), 
-    ),
-  ],
-),
+          children: [
+            Consumer<UserProvider>(
+              builder: (context, userProvider, child) {
+                return Expanded(
+              child: userProvider.user != null &&
+                      userProvider.user!.wishlist != null &&
+                      userProvider.user!.wishlist!.isNotEmpty
+                  ? BookGridOfWishlist(wishlist: userProvider.user!.wishlist!)
+                  : Center(child: Text("Your wishlist is empty")),
+            );
+              },
+            ),
+            
+          ],
+        ),
       ),
     );
   }
