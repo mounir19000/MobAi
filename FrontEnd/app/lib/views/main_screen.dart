@@ -18,8 +18,8 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _pages = [
     HomePage(),
     WishlistPage(),
-    ProfilePage(),
     CartPage(),
+    ProfilePage(),
   ];
 
   @override
@@ -40,7 +40,6 @@ class _MainScreenState extends State<MainScreen> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 15),
             child: GNav(
-              
               rippleColor: Colors.grey[300]!,
               hoverColor: Colors.grey[100]!,
               gap: 8,
@@ -73,7 +72,6 @@ class _MainScreenState extends State<MainScreen> {
                   icon: CupertinoIcons.profile_circled,
                   text: 'Profile',
                 ),
-                
               ],
             ),
           ),

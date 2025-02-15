@@ -14,7 +14,6 @@ class BookSummaryPage extends StatefulWidget {
 
 class _BookSummaryPageState extends State<BookSummaryPage> {
   bool showSummary = false;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,15 +39,18 @@ class _BookSummaryPageState extends State<BookSummaryPage> {
                 HeaderSection(),
                 BookInfo(book: widget.book),
                 ActionButtons(
-                  showSummary: showSummary,
-                  onToggleSummary: () {
-                    setState(() {
-                      showSummary = !showSummary;
-                    });
+                  onHideSummary: () {
+                    Navigator.pop(context);
                   },
                 ),
+                SizedBox(height: 15),
                 BookDetails(book: widget.book),
-                if (showSummary) BookSummary(),
+                SizedBox(height: 15),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: BookSummary(),
+                  ),
+                ),
                 SizedBox(height: 30),
               ],
             ),
@@ -64,15 +66,15 @@ class HeaderSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 50, 20, 10),
+      padding: const EdgeInsets.fromLTRB(20, 65, 20, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           GestureDetector(
             onTap: () => Navigator.pop(context),
-            child: SvgPicture.asset("lib/assets/icons/back.svg", height: 24),
+            child: SvgPicture.asset("lib/assets/icons/back-pink.svg", height: 24),
           ),
-          SvgPicture.asset("lib/assets/icons/logo-white.svg", height: 24),
+          SvgPicture.asset("lib/assets/icons/logo-pink.svg", height: 24),
         ],
       ),
     );
@@ -90,7 +92,9 @@ class BookInfo extends StatelessWidget {
     return Center(
       child: Column(
         children: [
-          SizedBox(height: 30,),
+          SizedBox(
+            height: 30,
+          ),
           Text(
             book.name,
             style: TextStyle(
@@ -129,13 +133,10 @@ class BookInfo extends StatelessWidget {
   }
 }
 
-// Buttons for Wishlist & Summary Toggle
 class ActionButtons extends StatelessWidget {
-  final bool showSummary;
-  final VoidCallback onToggleSummary;
+  final VoidCallback onHideSummary;
 
-  const ActionButtons(
-      {required this.showSummary, required this.onToggleSummary});
+  const ActionButtons({required this.onHideSummary});
 
   @override
   Widget build(BuildContext context) {
@@ -157,8 +158,8 @@ class ActionButtons extends StatelessWidget {
           ),
           SizedBox(width: 20),
           ElevatedButton(
-            onPressed: onToggleSummary,
-            child: Text(showSummary ? "Hide summary" : "See summary"),
+            onPressed: onHideSummary, // Return to the previous page
+            child: Text("Hide summary"),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,
               foregroundColor: AppTheme.primaryColor,
@@ -185,17 +186,19 @@ class BookDetails extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 30),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          BookDetailRow(
-              label: "Author",
-              value: book.author,
-              iconPath: "lib/assets/icons/author-white.svg"),
-          SizedBox(height: 12),
-          BookDetailRow(
-              label: "Published",
-              value: "2014",
-              iconPath: "lib/assets/icons/calendar-white.svg"),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            BookDetailRow(
+                label: "Author",
+                value: book.author,
+                iconPath: "lib/assets/icons/author-white.svg"),
+            SizedBox(height: 12),
+            BookDetailRow(
+                label: "Published",
+                value: "2014",
+                iconPath: "lib/assets/icons/calendar-white.svg"),
+          ]),
           SizedBox(height: 12),
           BookDetailRow(
               label: "Rating",
@@ -218,24 +221,30 @@ class BookDetailRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SvgPicture.asset(iconPath, height: 20),
-        SizedBox(width: 8),
-        Text(
-          label,
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white70),
-        ),
-        SizedBox(width: 10),
-        Expanded(
-          child: Text(
-            value,
+    return SizedBox(
+      width: 150,
+      child: Row(
+        children: [
+          SvgPicture.asset(iconPath, height: 20),
+          SizedBox(width: 8),
+          Text(
+            label,
             style: TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-            textAlign: TextAlign.right,
+                fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
           ),
-        ),
-      ],
+          SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              value,
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.white),
+              textAlign: TextAlign.right,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
