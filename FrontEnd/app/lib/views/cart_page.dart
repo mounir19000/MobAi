@@ -1,8 +1,6 @@
-import 'dart:math';
-
-import 'package:app/core/constants/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:app/core/constants/app_theme.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -56,8 +54,7 @@ class _CartPageState extends State<CartPage> {
                 Expanded(
                   child: cartItems.isEmpty
                       ? const Center(child: Text('Your cart is empty'))
-                      : CartItemList(
-                          cartItems: cartItems, onRemove: removeItem),
+                      : CartItemList(cartItems: cartItems, onRemove: removeItem),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(25.0),
@@ -67,19 +64,17 @@ class _CartPageState extends State<CartPage> {
                       ElevatedButton(
                         onPressed: cartItems.isEmpty ? null : emptyCart,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.transparent, // No background
-                          shadowColor: Colors.transparent, // Removes shadow
+                          backgroundColor: Colors.transparent,
+                          shadowColor: Colors.transparent,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
                             side: BorderSide(
-                                color: AppTheme.primaryColor,
-                                width: 2), // Border color
+                                color: AppTheme.primaryColor, width: 2),
                           ),
                         ),
                         child: const Text(
                           'Empty Cart',
-                          style: TextStyle(
-                              color: AppTheme.primaryColor), // Text color to match the border
+                          style: TextStyle(color: AppTheme.primaryColor),
                         ),
                       ),
                       ElevatedButton(
@@ -89,7 +84,10 @@ class _CartPageState extends State<CartPage> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20)),
                         ),
-                        child: const Text('Purchase Items', style: TextStyle(color: Colors.white),),
+                        child: const Text(
+                          'Purchase Items',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ],
                   ),
@@ -107,21 +105,19 @@ class CartItemList extends StatefulWidget {
   final List<Map<String, dynamic>> cartItems;
   final Function(int) onRemove;
 
-  const CartItemList(
-      {super.key, required this.cartItems, required this.onRemove});
+  const CartItemList({super.key, required this.cartItems, required this.onRemove});
 
   @override
   _CartItemListState createState() => _CartItemListState();
 }
 
 class _CartItemListState extends State<CartItemList> {
-  List<int> quantities = [];
+  late List<int> quantities;
 
   @override
   void initState() {
     super.initState();
-    quantities = List.filled(
-        widget.cartItems.length, 1); // Initialize with 1 for each item
+    quantities = List.filled(widget.cartItems.length, 1);
   }
 
   void incrementQuantity(int index) {
@@ -140,56 +136,49 @@ class _CartItemListState extends State<CartItemList> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: widget.cartItems.length,
-      itemBuilder: (context, index) {
-        final item = widget.cartItems[index];
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: SizedBox(
-            // height: 130,
-
+    return Expanded(  // Wrap ListView in Expanded to prevent infinite height issue
+      child: ListView.builder(
+        itemCount: widget.cartItems.length,
+        itemBuilder: (context, index) {
+          final item = widget.cartItems[index];
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Container(
-                  width: 100,
-                  height: double.infinity,
+                  width: 70,
+                  height: 120,  // Set a fixed height to prevent layout errors
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
-                    image: DecorationImage(
+                    image: const DecorationImage(
                       image: AssetImage('lib/assets/images/book-cover.png'),
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
-                SizedBox(
-                  width: 15,
-                ),
+                const SizedBox(width: 15),
                 Container(
-                  padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
-                  width: 180,
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  width: 140,
                   decoration: BoxDecoration(
-                    color: Colors.white, // Move color inside BoxDecoration
-                    borderRadius: BorderRadius.circular(
-                        30), // Adjust the radius as needed
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.1),
                         blurRadius: 6,
                         spreadRadius: 2,
-                        offset: Offset(0, 3), // Adds a slight shadow effect
+                        offset: const Offset(0, 3),
                       ),
                     ],
                   ),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         item['title'],
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w700, fontSize: 14),
+                        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
                       ),
                       Text(item['author']),
                       const SizedBox(height: 4),
@@ -198,13 +187,11 @@ class _CartItemListState extends State<CartItemList> {
                         children: [
                           IconButton(
                             onPressed: () => decrementQuantity(index),
-                            icon: Icon(Icons.remove,
-                                color: AppTheme.primaryColor),
+                            icon: Icon(Icons.remove, color: AppTheme.primaryColor),
                           ),
                           Text(
                             "${quantities[index]}",
-                            style: const TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                           IconButton(
                             onPressed: () => incrementQuantity(index),
@@ -215,45 +202,41 @@ class _CartItemListState extends State<CartItemList> {
                     ],
                   ),
                 ),
-                SizedBox(
-                  width: 15,
-                ),
+                const SizedBox(width: 15),
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
                       height: 60,
                       width: 60,
-                      alignment: Alignment
-                          .center, // Centers the child inside the container
+                      alignment: Alignment.center,
                       decoration: BoxDecoration(
                         border: Border.all(
                           color: AppTheme.primaryColor,
-                          width: 2, // Border with primary color
+                          width: 2,
                         ),
-                        shape:
-                            BoxShape.circle, // Ensures perfect circular shape
+                        shape: BoxShape.circle,
                       ),
-                      child: Text(
-                        '${item['price'] * quantities[index]}\$',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: Colors.red,
-                          fontSize: 18,
+                      child: FittedBox(
+                        child: Text(
+                          '${item['price'] * quantities[index]}\$',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.red,
+                            fontSize: 16, // Adjusted font size
+                          ),
+                          textAlign: TextAlign.center,
                         ),
-                        textAlign:
-                            TextAlign.center, // Ensures text stays centered
                       ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     SizedBox(
-                      height: 30, // Set desired height
+                      height: 30,
                       child: TextButton(
                         onPressed: () => widget.onRemove(index),
                         style: TextButton.styleFrom(
                           backgroundColor: AppTheme.primaryColor,
-                          padding: EdgeInsets.symmetric(
-                              vertical: 4, horizontal: 12), // Adjust padding
+                          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
                         ),
                         child: const Text(
                           'Remove',
@@ -265,9 +248,9 @@ class _CartItemListState extends State<CartItemList> {
                 ),
               ],
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
