@@ -2,6 +2,7 @@ import 'package:app/core/constants/top_curve.dart';
 import 'package:flutter/material.dart';
 
 import '../core/constants/app_theme.dart';
+import '../state/user_provider.dart';
 import '../widgets/books.dart';
 
 class WishlistPage extends StatelessWidget {
@@ -9,6 +10,8 @@ class WishlistPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = UserProvider();
+  
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
@@ -37,7 +40,7 @@ class WishlistPage extends StatelessWidget {
         body: Column(
   children: [
     Expanded(
-      child: BookGrid(), 
+      child: BookGridOfWishlist(wishlist: userProvider.user!.wishlist,), 
     ),
   ],
 ),
