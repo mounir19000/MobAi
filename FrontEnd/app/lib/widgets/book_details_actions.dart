@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:app/core/constants/app_theme.dart';
 import 'package:app/widgets/add_to_cart_widget.dart';
+import 'package:provider/provider.dart';
 import '../models/book_model.dart';
+import '../state/user_provider.dart';
 
 class BookDetailsActions extends StatelessWidget {
   final BookModel book;
@@ -25,22 +27,34 @@ class BookDetailsActions extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                TextButton.icon(
-                  onPressed: () {},
-                  label: Text(
-                    "Add to Wishlist",
-                    style: TextStyle(
+                Consumer<UserProvider>(
+                  builder: (context, userProvider, child) {
+                    bool isFavorite = userProvider.user!.wishlist.contains(book.bookId);
+                    return TextButton.icon(
+                      onPressed: () {
+                        isFavorite? userProvider.removeFromWishlist(book.bookId):
+                          userProvider.addToWishlist(book.bookId);
+                      },
+                      label: Text(
+                        isFavorite ? "Remove from Wishlist" : "Add to Wishlist",
+                        style: TextStyle(
+                          color: AppTheme.primaryColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      icon: Icon(
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
                         color: AppTheme.primaryColor,
-                        fontWeight: FontWeight.w600),
-                  ),
-                  icon: SvgPicture.asset("lib/assets/icons/heart.svg"),
+                      ),
+                    );
+                  },
                 ),
                 SizedBox(height: 10),
                 AddToCartWidget(),
                 SizedBox(height: 10),
                 ElevatedButton.icon(
                   onPressed: () {
-                    Navigator.push(
+                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => BookSummaryPage(book: book),
