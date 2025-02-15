@@ -102,6 +102,29 @@ else:
     initialize_faiss()
     save_faiss()
 
+def filter_results_with_llm(query, results):
+    """
+    Uses LLM to filter out irrelevant book recommendations while maintaining the result structure.
+    """
+    filtering_prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", "You are an AI assistant that helps refine book recommendations. You will receive a user query and a list of recommended books. Remove books that are irrelevant to the query while keeping the original JSON structure and giving it as it is in a string with no decorators.  Ensure the response is valid JSON. If the new list is empty send it empty."),
+            ("human", "User Query: {query}\n\nRecommended Books:\n{results}\n\nReturn the filtered book list in the same JSON format.")
+        ]
+    )
+    
+    filtering_chain = filtering_prompt | model | StrOutputParser()
+    
+    filtered_books = filtering_chain.invoke({"query": query, "results": json.dumps(results)})
+    
+    try:
+        filtered_results = json.loads(filtered_books)
+        return {"results": filtered_results, "isBuying": False}  # Ensure structure consistency
+    except json.JSONDecodeError:
+        print("Error parsing filtered books.")
+        return {"results": results, "isBuying": False}  # Fallback in case of parsing issues
+    
+
 # Book Search
 def search_books(query):
     query_vector = embedding_model.encode(query).reshape(1, -1)
@@ -117,10 +140,11 @@ def search_books(query):
                     "name": book["name"],
                     "author": book["author"],
                     "genre": book["genre"],
-                    "distance": float(distances[0][i])
+                    # "distance": float(distances[0][i])
                 })
     
-    return {"results": results, "isBuying": False}
+    # Filter results using LLM while preserving structure
+    return filter_results_with_llm(query, results)
 
 # Book Purchase
 def process_purchase(query):
