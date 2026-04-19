@@ -5,10 +5,17 @@ import numpy as np
 import faiss
 from dotenv import load_dotenv
 from sentence_transformers import SentenceTransformer
-from langchain.prompts import ChatPromptTemplate
-from langchain.schema.output_parser import StrOutputParser
+try:
+    from langchain_core.prompts import ChatPromptTemplate
+    from langchain_core.output_parsers import StrOutputParser
+except ImportError:
+    from langchain.prompts import ChatPromptTemplate
+    from langchain.schema.output_parser import StrOutputParser
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.schema.runnable import RunnableBranch
+try:
+    from langchain_core.runnables import RunnableBranch
+except ImportError:
+    from langchain.schema.runnable import RunnableBranch
 
 
 # Load environment variables
@@ -116,13 +123,66 @@ def filter_results_with_llm(query, results):
     filtering_chain = filtering_prompt | model | StrOutputParser()
     
     filtered_books = filtering_chain.invoke({"query": query, "results": json.dumps(results)})
-    
-    try:
-        filtered_results = json.loads(filtered_books)
-        return {"results": filtered_results, "isBuying": False}  # Ensure structure consistency
-    except json.JSONDecodeError:
-        print("Error parsing filtered books.")
-        return {"results": results, "isBuying": False}  # Fallback in case of parsing issues
+
+    def _extract_json_books(raw_text):
+        """Best-effort parse for model output that may be wrapped, truncated, or partially invalid."""
+        if not isinstance(raw_text, str):
+            return None
+
+        text = raw_text.strip()
+        if text.startswith("```"):
+            lines = text.splitlines()
+            lines = [line for line in lines if not line.strip().startswith("```")]
+            text = "\n".join(lines).strip()
+
+        # Fast path for fully valid JSON.
+        try:
+            parsed = json.loads(text)
+            return parsed if isinstance(parsed, list) else None
+        except json.JSONDecodeError:
+            pass
+
+        # Attempt to parse only the JSON array segment.
+        array_start = text.find("[")
+        array_end = text.rfind("]")
+        if array_start != -1 and array_end > array_start:
+            try:
+                parsed = json.loads(text[array_start:array_end + 1])
+                return parsed if isinstance(parsed, list) else None
+            except json.JSONDecodeError:
+                pass
+
+        # Salvage valid object entries from a truncated array.
+        if array_start == -1:
+            return None
+
+        decoder = json.JSONDecoder()
+        idx = array_start + 1
+        salvaged = []
+
+        while idx < len(text):
+            while idx < len(text) and text[idx] in " \n\r\t,":
+                idx += 1
+            if idx >= len(text) or text[idx] == "]":
+                break
+
+            try:
+                obj, next_idx = decoder.raw_decode(text, idx)
+            except json.JSONDecodeError:
+                break
+
+            if isinstance(obj, dict):
+                salvaged.append(obj)
+            idx = next_idx
+
+        return salvaged if salvaged else None
+
+    filtered_results = _extract_json_books(filtered_books)
+    if filtered_results is None:
+        print("Error parsing filtered books. Falling back to unfiltered results.")
+        return {"results": results, "isBuying": False}
+
+    return {"results": filtered_results, "isBuying": False}
     
 
 # Book Search

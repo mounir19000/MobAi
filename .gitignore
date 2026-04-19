@@ -1,2 +1,5 @@
-Ai/final/*.txt
 Ai/final/books_full.json
+Ai/final/__pycache__
+.env
+Ai/final/venv
+Ai/final/*.log

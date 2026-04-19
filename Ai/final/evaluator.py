@@ -1,5 +1,6 @@
 import json
 import random
+import time
 from langchain_google_genai import ChatGoogleGenerativeAI
 from dotenv import load_dotenv
 import os
@@ -19,11 +20,34 @@ load_dotenv()
 
 # Initialize LLM for generating test prompts and reviewing results
 llm = ChatGoogleGenerativeAI(
-    model=os.getenv("GENAI_MODEL", "gemini-1.5-flash"),
+    model=os.getenv("GENAI_MODEL", "gemini-2.5-flash"),
     max_tokens=int(os.getenv("GENAI_MAX_TOKENS", 1024)),
     timeout=int(os.getenv("GENAI_TIMEOUT", 60)),
     max_retries=int(os.getenv("GENAI_MAX_RETRIES", 5)),
 )
+
+def invoke_with_retry(callable_fn, *args, max_retries=5, base_delay=60, **kwargs):
+    """Invokes a callable with exponential backoff retry on rate limit errors."""
+    for attempt in range(max_retries):
+        try:
+            return callable_fn(*args, **kwargs)
+        except Exception as e:
+            error_str = str(e)
+            if "429" in error_str or "RESOURCE_EXHAUSTED" in error_str:
+                # Try to extract retry delay from error message
+                delay = base_delay * (attempt + 1)
+                try:
+                    import re
+                    match = re.search(r'retry\s*(?:in|Delay["\s:]*)\s*["\']?(\d+)', error_str, re.IGNORECASE)
+                    if match:
+                        delay = int(match.group(1)) + 5  # Add 5s buffer
+                except Exception:
+                    pass
+                print(f"  Rate limited (attempt {attempt + 1}/{max_retries}). Waiting {delay}s before retrying...")
+                time.sleep(delay)
+            else:
+                raise  # Re-raise non-rate-limit errors
+    raise RuntimeError(f"Failed after {max_retries} retries due to rate limiting.")
 
 def generate_test_prompts():
     """Uses LLM to generate relevant test prompts based on the book database."""
@@ -49,8 +73,9 @@ def generate_test_prompts():
         "Generate only the prompts and nothing more."
     )
     
-    response = llm.invoke(prompt_template)
-    return response.content.split("\n") if hasattr(response, "content") else []
+    response = invoke_with_retry(llm.invoke, prompt_template)
+    prompts = [p.strip() for p in response.content.split("\n") if p.strip()] if hasattr(response, "content") else []
+    return prompts
 
 
 def evaluate_results(results):
@@ -68,7 +93,7 @@ def review_results_with_llm(results_summary):
         "Analyze the following book search test results and provide a summary of their effectiveness.\n\n"
         f"{json.dumps(results_summary, indent=2)}"
     )
-    response = llm.invoke(review_prompt)
+    response = invoke_with_retry(llm.invoke, review_prompt)
     
     # Extract text content from AIMessage
     return response.content if hasattr(response, "content") else str(response)
@@ -84,13 +109,20 @@ def run_tests(chain):
     
     for prompt in test_prompts:
         print(f"Testing prompt: {prompt}")
-        result = chain.invoke({"prompt": prompt})
+        time.sleep(10)  # Add sleep to avoid rate limits (increased from 5 to 10)
+        try:
+            result = invoke_with_retry(chain.invoke, {"prompt": prompt})
+        except Exception as e:
+            print(f"  Error processing prompt: {e}")
+            result = {"results": [], "isBuying": False}
         score = evaluate_results(result)
         results_summary.append({"prompt": prompt, "result": result, "score": score})
         print(f"Score: {score}\n")
     
-    llm_review = review_results_with_llm(results_summary)
-    print("LLM Review:\n", llm_review)
+    time.sleep(10)  # Wait before the review call
+    llm_review = "LLM review is commented."
+    # llm_review = review_results_with_llm(results_summary)
+    # print("LLM Review:\n", llm_review)
     
     return results_summary, llm_review
 
